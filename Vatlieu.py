@@ -41,8 +41,7 @@ class VatLieuApp(tk.Tk):
         list_donvi = ["Kg", "Bao", "Viên", "m3", "Lít", "Cây", "Tấm"]
 
         for i, (label, key) in enumerate(zip(labels, keys)):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10)).grid(
-                row=i//2, column=(i%2)*2, sticky="w", padx=8, pady=5
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10,"bold")).grid(row=i//2, column=(i%2)*2, sticky="w", padx=8, pady=5
             )
             if key == "DonVi":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_donvi,
@@ -56,7 +55,7 @@ class VatLieuApp(tk.Tk):
                 )
 
         # --- Treeview ---
-        columns = ("MaVL", "TenVL", "DonVi", "Gia", "MaNCC")
+        columns = ("Mã VL", "Tên VL", "Đơn vị", "Giá", "Mã NCC")
         frame_table = tk.LabelFrame(self, text="Danh sách vật liệu", font=("Arial", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=8, pady=8)
         frame_table.pack(padx=15, pady=10, fill="both", expand=True)
