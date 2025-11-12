@@ -8,8 +8,8 @@ def get_connection():
     return mysql.connector.connect(
         host="localhost",       # hoặc địa chỉ server MySQL
         user="root",            # username
-        password="your_pass",   # mật khẩu
-        database="your_db"      # tên database
+        password="123456789",   # mật khẩu
+        database="quanly_cuahangvatlieuxaydung"      # tên database
     )
 
 # ======== HÀM CHÍNH ========
