@@ -25,8 +25,8 @@ def dang_nhap():
         result = cursor.fetchone()
 
         if result:
-            messagebox.showinfo("Thành công", f"Đăng nhập thành công!")
-            root.destroy()  # sau này có thể mở giao diện chính
+            messagebox.showinfo("Thành công", "Đăng nhập thành công!")
+            root.destroy()  # mở giao diện chính sau này
         else:
             messagebox.showerror("Thất bại", "Sai tên đăng nhập hoặc mật khẩu!")
 
@@ -36,7 +36,6 @@ def dang_nhap():
     finally:
         if 'conn' in locals() and conn.is_connected():
             conn.close()
-
 
 def thoat():
     root.destroy()
@@ -84,7 +83,7 @@ def mo_dang_ky():
 
     win_dk = Toplevel(root)
     win_dk.title("Đăng ký tài khoản")
-    win_dk.geometry("400x350")
+    win_dk.geometry("500x350")
     win_dk.configure(bg="#fce4ec")
     win_dk.resizable(False, False)
 
@@ -106,7 +105,7 @@ def mo_dang_ky():
     entry_confirm_pass = tk.Entry(frame_dk, font=("Arial", 12), width=25, bg="#f8bbd0", show="*")
     entry_confirm_pass.grid(row=2, column=1)
 
-    tk.Button(frame_dk, text="Đăng ký", font=("Arial", 12, "bold"), bg="#f48fb1", fg="white",
+    tk.Button(frame_dk, text="Đăng ký", font=("Arial", 12), bg="#f48fb1", fg="white",
               activebackground="#f06292", width=15, command=dang_ky).grid(row=3, column=0, columnspan=2, pady=20)
 
 

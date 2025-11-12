@@ -61,7 +61,7 @@ class NhanVienApp(tk.Tk):
         ]
 
         for i, (label, key) in enumerate(labels):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10)).grid(
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10,"bold")).grid(
                 row=i//4, column=(i%4)*2, sticky="w", padx=8, pady=4
             )
             if key == "GioiTinh":
