@@ -8,17 +8,10 @@ def open_main_menu():
     root.title("CHƯƠNG TRÌNH QUẢN LÝ CỬA HÀNG VẬT LIỆU XÂY DỰNG")
     root.geometry("1000x600")
     root.resizable(False, False)
-###lkmysql
-    conn = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="123456789",
-    database="quanly_cuahangvatlieuxaydung"
-)
 
     # ==== ẢNH NỀN ====
     try:
-        bg_image = Image.open("steel_background.jpg")  # ảnh nền (thép)
+        bg_image = Image.open("steel_background.jpg")
         bg_image = bg_image.resize((1000, 600))
         bg_photo = ImageTk.PhotoImage(bg_image)
         lbl_bg = tk.Label(root, image=bg_photo)
@@ -27,11 +20,11 @@ def open_main_menu():
     except:
         root.configure(bg="#fce4ec")  # fallback màu pastel hồng
 
-    # ==== THANH THANH CÔNG CỤ NGANG ====
+    # ==== THANH CÔNG CỤ NGANG ====
     toolbar = tk.Frame(root, bg="#f8bbd0", height=90)
     toolbar.pack(fill="x")
 
-    # Danh sách các nút menu (icon_path, text, command)
+    # Danh sách nút menu (text, command)
     buttons = [
         ("👨‍💼 Nhân viên", lambda: messagebox.showinfo("Nhân viên", "Mở quản lý nhân viên")),
         ("🧾 Hóa đơn bán hàng", lambda: messagebox.showinfo("Hóa đơn", "Mở danh sách hóa đơn")),
@@ -39,44 +32,23 @@ def open_main_menu():
         ("👥 Khách hàng", lambda: messagebox.showinfo("Khách hàng", "Mở danh sách khách hàng")),
         ("📦 Hàng hóa", lambda: messagebox.showinfo("Hàng hóa", "Mở quản lý hàng hóa")),
         ("🚚 Nhà cung cấp", lambda: messagebox.showinfo("Nhà cung cấp", "Mở danh sách nhà cung cấp")),
-        ("🔑 Đăng xuất", lambda: (menu.destroy(), main()))
+        ("🔑 Đăng xuất", lambda: root.destroy())
     ]
 
-    # ==== TẠO NÚT CÔNG CỤ ====
-    icons = []
-    for i, (icon_path, text, cmd) in enumerate(buttons):
-        try:
-            img = Image.open(icon_path)
-            img = img.resize((48, 48))
-            photo = ImageTk.PhotoImage(img)
-            icons.append(photo)
-            btn = tk.Button(
-                toolbar,
-                image=photo,
-                text=text,
-                compound="top",
-                font=("Arial", 10, "bold"),
-                bg="#f8bbd0",
-                fg="#4a148c",
-                activebackground="#f48fb1",
-                relief="flat",
-                cursor="hand2",
-                width=100,
-                command=cmd
-            )
-        except:
-            btn = tk.Button(
-                toolbar,
-                text=text,
-                font=("Arial", 10, "bold"),
-                bg="#f8bbd0",
-                fg="#4a148c",
-                activebackground="#f48fb1",
-                relief="flat",
-                cursor="hand2",
-                width=100,
-                command=cmd
-            )
+    # Tạo nút công cụ
+    for i, (text, cmd) in enumerate(buttons):
+        btn = tk.Button(
+            toolbar,
+            text=text,
+            font=("Arial", 10, "bold"),
+            bg="#f8bbd0",
+            fg="#4a148c",
+            activebackground="#f48fb1",
+            relief="flat",
+            cursor="hand2",
+            width=16,
+            command=cmd
+        )
         btn.grid(row=0, column=i, padx=5, pady=10)
 
     # ==== TIÊU ĐỀ LỚN ====
@@ -92,7 +64,7 @@ def open_main_menu():
 
     # ==== ẢNH TRUNG TÂM ====
     try:
-        img_main = Image.open("steel_pipes.jpg")  # ảnh ống thép
+        img_main = Image.open("steel_pipes.jpg")
         img_main = img_main.resize((800, 400))
         photo_main = ImageTk.PhotoImage(img_main)
         lbl_img = tk.Label(root, image=photo_main, bg="#ffffffcc")
