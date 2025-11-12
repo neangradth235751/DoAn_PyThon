@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 import mysql.connector
 
-class NhanVienApp(tk.Tk):
+class NhanVien(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Quản Lý Nhân Viên")
@@ -33,6 +33,7 @@ class NhanVienApp(tk.Tk):
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=8)
         frame_input.pack(padx=15, pady=5, fill="x")
 
+        # Variables
         self.vars = {
             "MaNV": tk.StringVar(),
             "TenNV": tk.StringVar(),
@@ -44,11 +45,13 @@ class NhanVienApp(tk.Tk):
             "Luong": tk.StringVar()
         }
 
+        # ComboBox lists
         list_gioitinh = ["Nam", "Nữ"]
         list_diachi = ["Hà Nội","Đà Nẵng","Hồ Chí Minh","Cần Thơ","Hải Phòng","Huế",
                        "Bình Dương","Quảng Ninh","Nam Định","Nha Trang"]
         list_chucvu = ["Quản lý","Thu ngân","Bán hàng","Kế toán","Kho hàng","Nhân sự"]
 
+        # Labels & keys
         labels = [
             ("Mã NV:", "MaNV"),
             ("Tên NV:", "TenNV"),
@@ -61,36 +64,45 @@ class NhanVienApp(tk.Tk):
         ]
 
         for i, (label, key) in enumerate(labels):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10,"bold")).grid(
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10, "bold")).grid(
                 row=i//4, column=(i%4)*2, sticky="w", padx=8, pady=4
             )
+            # ComboBox hoặc DateEntry hoặc Entry
             if key == "GioiTinh":
-                cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_gioitinh, width=18, state="readonly")
+                cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
+                                  values=list_gioitinh, width=18, state="readonly",
+                                  font=("Arial", 11))
                 cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                cb.current(0)
+                self.vars[key].set("")  # mặc định trống
+
             elif key == "DiaChi":
-                cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_diachi, width=18, state="readonly")
+                cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
+                                  values=list_diachi, width=18, state="readonly",
+                                  font=("Arial", 11))
                 cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                cb.current(0)
+                self.vars[key].set("")  # mặc định trống
+
             elif key == "ChucVu":
-                cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_chucvu, width=18, state="readonly")
+                cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
+                                  values=list_chucvu, width=18, state="readonly",
+                                  font=("Arial", 11))
                 cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                cb.current(0)
+                self.vars[key].set("")  # mặc định trống
+
             elif key == "NgaySinh":
                 de = DateEntry(frame_input, textvariable=self.vars[key],
                                date_pattern='dd/mm/yyyy', width=18,
                                background="#f48fb1", foreground="white",
                                borderwidth=2, font=("Arial", 11))
                 de.grid(row=i//4, column=(i%4)*2+1, padx=5, pady=5)
+                self.vars[key].set("")  # mặc định trống
+
             else:
                 tk.Entry(frame_input, textvariable=self.vars[key],
                          width=22, font=("Arial", 11), bg="#f8bbd0").grid(
                     row=i//4, column=(i%4)*2+1, padx=5, pady=5)
 
-                
-
-       
-        # === Treeview với đường kẻ ngang dọc ===
+        # === Treeview ===
         columns = ("MaNV", "TenNV", "GioiTinh", "DiaChi", "DienThoai", "NgaySinh", "ChucVu", "Luong")
         col_texts = ["Mã NV","Tên NV","Giới tính","Địa chỉ","Điện thoại","Ngày sinh","Chức vụ","Lương"]
 
@@ -101,7 +113,6 @@ class NhanVienApp(tk.Tk):
         style = ttk.Style()
         style.configure("Treeview", rowheight=25, font=("Arial", 10))
         style.configure("Treeview.Heading", font=("Arial", 10, "bold"))
-        style.configure("Treeview", bordercolor="#000000", relief="solid")
         style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
 
         self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)
@@ -109,8 +120,7 @@ class NhanVienApp(tk.Tk):
             self.tree.heading(col, text=col_texts[i])
             self.tree.column(col, width=120, anchor="center", stretch=False)
 
-        # Thêm đường kẻ ngang/dọc
-        self.tree["displaycolumns"] = columns
+        # Màu xen kẽ
         self.tree.tag_configure('evenrow', background='#f9f9f9')
         self.tree.tag_configure('oddrow', background='#ffffff')
 
@@ -136,26 +146,12 @@ class NhanVienApp(tk.Tk):
         self.selected_ma = None
         self.load_data()
 
-    # === Phương thức CRUD ===
+    # === CRUD ===
     def load_data(self):
         for row in self.tree.get_children():
             self.tree.delete(row)
         self.cursor.execute("SELECT * FROM nhanvien")
         rows = self.cursor.fetchall()
-        for index, r in enumerate(rows):
-            tag = 'evenrow' if index % 2 == 0 else 'oddrow'
-            self.tree.insert("", "end", values=r, tags=(tag,))
-
-    def filter_by_date(self):
-        if not self.filter_date_var.get():
-            messagebox.showwarning("Chưa chọn", "Vui lòng chọn ngày để lọc!")
-            return
-        day, month, year = map(int, self.filter_date_var.get().split("/"))
-        query = "SELECT * FROM nhanvien WHERE DAY(STR_TO_DATE(NgaySinh,'%d/%m/%Y'))=%s AND MONTH(STR_TO_DATE(NgaySinh,'%d/%m/%Y'))=%s AND YEAR(STR_TO_DATE(NgaySinh,'%d/%m/%Y'))=%s"
-        self.cursor.execute(query, (day, month, year))
-        rows = self.cursor.fetchall()
-        for row in self.tree.get_children():
-            self.tree.delete(row)
         for index, r in enumerate(rows):
             tag = 'evenrow' if index % 2 == 0 else 'oddrow'
             self.tree.insert("", "end", values=r, tags=(tag,))
@@ -220,10 +216,9 @@ class NhanVienApp(tk.Tk):
     def boqua_nv(self):
         for v in self.vars.values():
             v.set("")
-        self.vars["GioiTinh"].set("Nam")
-        self.vars["DiaChi"].set("Hà Nội")
-        self.vars["ChucVu"].set("Quản lý")
+        self.sua_mode=False
+        self.selected_ma=None
 
 if __name__=="__main__":
-    app = NhanVienApp()
+    app = NhanVien()
     app.mainloop()

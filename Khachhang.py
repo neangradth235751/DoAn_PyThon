@@ -11,43 +11,44 @@ def get_connection():
         database="quanly_cuahangvatlieuxaydung"
     )
 
-# ======== CLASS QUẢN LÝ VẬT LIỆU ========
-class VatLieu(tk.Tk):
+# ======== CLASS QUẢN LÝ KHÁCH HÀNG ========
+class KhachHang(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Quản lý vật liệu")
-        self.geometry("950x550")  # giảm chiều cao
-        self.configure(bg="#fce4ec")  
+        self.title("Quản lý khách hàng")
+        self.geometry("900x550")
+        self.configure(bg="#fce4ec")  # pastel hồng dịu mắt
 
         # --- Tiêu đề ---
-        tk.Label(self, text="QUẢN LÝ VẬT LIỆU", font=("Helvetica", 20, "bold"),
+        tk.Label(self, text="QUẢN LÝ KHÁCH HÀNG", font=("Helvetica", 20, "bold"),
                  fg="#ad1457", bg="#fce4ec").pack(pady=10)
 
         # --- Khung nhập liệu ---
-        frame_input = tk.LabelFrame(self, text="Thông tin vật liệu", font=("Arial", 12, "bold"),
+        frame_input = tk.LabelFrame(self, text="Thông tin khách hàng", font=("Arial", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=10)
         frame_input.pack(padx=15, pady=5, fill="x")
 
         self.vars = {
-            "MaVL": tk.StringVar(),
-            "TenVL": tk.StringVar(),
-            "DonVi": tk.StringVar(),
-            "Gia": tk.StringVar(),
-            "MaNCC": tk.StringVar()
+            "MaKH": tk.StringVar(),
+            "TenKH": tk.StringVar(),
+            "SDT": tk.StringVar(),
+            "DiaChi": tk.StringVar()
         }
 
-        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Giá:", "Mã NCC:"]
-        keys = ["MaVL","TenVL","DonVi","Gia","MaNCC"]
-        list_donvi = ["Kg", "Bao", "Viên", "m3", "Lít", "Cây", "Tấm"]
+        labels = ["Mã KH:", "Tên KH:", "SĐT:", "Địa chỉ:"]
+        keys = ["MaKH","TenKH","SDT","DiaChi"]
+        list_diachi = ["Hà Nội","Đà Nẵng","Hồ Chí Minh","Cần Thơ","Hải Phòng",
+                       "Huế","Bình Dương","Quảng Ninh","Nam Định","Nha Trang"]
 
         for i, (label, key) in enumerate(zip(labels, keys)):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10,"bold")).grid(row=i//2, column=(i%2)*2, sticky="w", padx=8, pady=5
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10, "bold")).grid(
+                row=i//2, column=(i%2)*2, sticky="w", padx=8, pady=5
             )
-            if key == "DonVi":
-                cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_donvi,
-                                  width=22, state="readonly", font=("Arial",11))
+            if key == "DiaChi":
+                cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_diachi,
+                                  width=25, state="readonly", font=("Arial",11))
                 cb.grid(row=i//2, column=(i%2)*2+1, padx=8, pady=5)
-                cb.current(0)
+                
             else:
                 tk.Entry(frame_input, textvariable=self.vars[key], width=25,
                          font=("Arial", 11), bg="#f8bbd0").grid(
@@ -55,20 +56,20 @@ class VatLieu(tk.Tk):
                 )
 
         # --- Treeview ---
-        columns = ("Mã VL", "Tên VL", "Đơn vị", "Giá", "Mã NCC")
-        frame_table = tk.LabelFrame(self, text="Danh sách vật liệu", font=("Arial", 12, "bold"),
+        columns = ("Mã KH", "Tên KH", "SĐT", "Địa Chỉ")
+        frame_table = tk.LabelFrame(self, text="Danh sách khách hàng", font=("Arial", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=8, pady=8)
         frame_table.pack(padx=15, pady=10, fill="both", expand=True)
 
         style = ttk.Style()
-        style.configure("Treeview", rowheight=22, font=("Arial", 10))  # giảm rowheight
+        style.configure("Treeview", rowheight=25, font=("Arial", 10))
         style.configure("Treeview.Heading", font=("Arial", 11, "bold"))
         style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
 
-        self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)  # giảm height
+        self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)
         for col in columns:
             self.tree.heading(col, text=col)
-            self.tree.column(col, width=140, anchor="center")
+            self.tree.column(col, width=180, anchor="center")
         self.tree.pack(side="left", fill="both", expand=True)
 
         # màu xen kẽ
@@ -103,7 +104,7 @@ class VatLieu(tk.Tk):
         try:
             conn = get_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT MaVL, TenVL, DonVi, Gia, MaNCC FROM vatlieu ORDER BY MaVL")
+            cursor.execute("SELECT MaKH, TenKH, SDT, DiaChi FROM khachhang ORDER BY MaKH")
             rows = cursor.fetchall()
             conn.close()
         except mysql.connector.Error as err:
@@ -115,19 +116,19 @@ class VatLieu(tk.Tk):
         self.data = rows
 
     def them(self):
-        ma, ten, donvi, gia, mancc = [v.get().strip() for v in self.vars.values()]
-        if not ma or not ten:
-            messagebox.showwarning("Thiếu dữ liệu","Vui lòng nhập Mã và Tên vật liệu!")
+        makh, tenkh, sdt, diachi = [v.get().strip() for v in self.vars.values()]
+        if not makh or not tenkh:
+            messagebox.showwarning("Thiếu dữ liệu","Vui lòng nhập Mã và Tên khách hàng!")
             return
         for r in self.data:
-            if r[0]==ma:
-                messagebox.showerror("Lỗi","Mã vật liệu đã tồn tại!")
+            if r[0]==makh:
+                messagebox.showerror("Lỗi","Mã khách hàng đã tồn tại!")
                 return
         try:
             conn = get_connection()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO vatlieu(MaVL,TenVL,DonVi,Gia,MaNCC) VALUES(%s,%s,%s,%s,%s)",
-                           (ma,ten,donvi,gia,mancc))
+            cursor.execute("INSERT INTO khachhang(MaKH, TenKH, SDT, DiaChi) VALUES(%s,%s,%s,%s)",
+                           (makh,tenkh,sdt,diachi))
             conn.commit(); conn.close()
             self.load_data(); self.bo_qua()
         except mysql.connector.Error as err:
@@ -135,12 +136,12 @@ class VatLieu(tk.Tk):
 
     def xoa(self):
         if self.selected_index is None:
-            messagebox.showinfo("Chọn dòng","Vui lòng chọn vật liệu cần xóa!")
+            messagebox.showinfo("Chọn dòng","Vui lòng chọn khách hàng cần xóa!")
             return
-        ma = self.data[self.selected_index][0]
+        makh = self.data[self.selected_index][0]
         try:
             conn = get_connection(); cursor = conn.cursor()
-            cursor.execute("DELETE FROM vatlieu WHERE MaVL=%s",(ma,))
+            cursor.execute("DELETE FROM khachhang WHERE MaKH=%s",(makh,))
             conn.commit(); conn.close()
             self.load_data(); self.bo_qua()
         except mysql.connector.Error as err:
@@ -148,14 +149,14 @@ class VatLieu(tk.Tk):
 
     def sua(self):
         if self.selected_index is None:
-            messagebox.showinfo("Chọn dòng","Vui lòng chọn vật liệu cần sửa!")
+            messagebox.showinfo("Chọn dòng","Vui lòng chọn khách hàng cần sửa!")
             return
-        ma, ten, donvi, gia, mancc = [v.get().strip() for v in self.vars.values()]
-        old_ma = self.data[self.selected_index][0]
+        makh, tenkh, sdt, diachi = [v.get().strip() for v in self.vars.values()]
+        old_makh = self.data[self.selected_index][0]
         try:
             conn = get_connection(); cursor = conn.cursor()
-            cursor.execute("UPDATE vatlieu SET MaVL=%s, TenVL=%s, DonVi=%s, Gia=%s, MaNCC=%s WHERE MaVL=%s",
-                           (ma,ten,donvi,gia,mancc,old_ma))
+            cursor.execute("UPDATE khachhang SET MaKH=%s, TenKH=%s, SDT=%s, DiaChi=%s WHERE MaKH=%s",
+                           (makh, tenkh, sdt, diachi, old_makh))
             conn.commit(); conn.close()
             self.load_data(); self.bo_qua()
         except mysql.connector.Error as err:
@@ -168,6 +169,8 @@ class VatLieu(tk.Tk):
         for v in self.vars.values(): v.set("")
         self.selected_index = None
         self.tree.selection_remove(self.tree.selection())
+        # mặc định chọn thành phố đầu tiên
+        self.vars["DiaChi"].set("Hà Nội")
 
     def on_select(self,event):
         sel = self.tree.selection()
@@ -178,5 +181,5 @@ class VatLieu(tk.Tk):
 
 # ======== CHẠY CHƯƠNG TRÌNH ========
 if __name__=="__main__":
-    app = VatLieu()
+    app = KhachHang()
     app.mainloop()
