@@ -1,6 +1,16 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import mysql.connector
+
+# ======== HÀM KẾT NỐI MYSQL ========
+def get_connection():
+    return mysql.connector.connect(
+        host="localhost",       # hoặc địa chỉ server MySQL
+        user="root",            # username
+        password="your_pass",   # mật khẩu
+        database="your_db"      # tên database
+    )
 
 # ======== HÀM CHÍNH ========
 def open_main_menu():
