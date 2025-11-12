@@ -1,9 +1,17 @@
 import tkinter as tk
+<<<<<<< HEAD
 from tkinter import messagebox, Toplevel
 from PIL import Image, ImageTk
 import mysql.connector
 
 # ==== HÀM XỬ LÝ ==== #
+=======
+from tkinter import messagebox
+from PIL import Image, ImageTk
+import mysql.connector
+
+# ==== HÀM XỬ LÝ ====
+>>>>>>> 01a701bcb6c4a6058ca43b311ed96d917fe743e7
 def dang_nhap():
     user = entry_user.get()
     pw = entry_pass.get()
@@ -15,8 +23,13 @@ def dang_nhap():
     try:
         conn = mysql.connector.connect(
             host="localhost",
+<<<<<<< HEAD
             user="root",
             password="123456789",
+=======
+            user="root",               # đổi nếu bạn dùng user khác
+            password="123456789",      # nhập mật khẩu MySQL của bạn
+>>>>>>> 01a701bcb6c4a6058ca43b311ed96d917fe743e7
             database="quanly_cuahangvatlieuxaydung"
         )
         cursor = conn.cursor()
@@ -42,6 +55,7 @@ def thoat():
     root.destroy()
 
 
+<<<<<<< HEAD
 # ==== HÀM ĐĂNG KÝ ==== #
 def mo_dang_ky():
     def dang_ky():
@@ -133,6 +147,25 @@ frame = tk.Frame(root, bg="#ffffff", bd=0, relief="ridge")
 frame.pack(pady=10, padx=30, fill="x")
 
 # ==== ẢNH ==== #
+=======
+# ==== CỬA SỔ CHÍNH ====
+root = tk.Tk()
+root.title("Đăng nhập - Quản Lí Cửa Hàng Vật Liệu Xây Dựng")
+root.geometry("500x320")
+root.resizable(False, False)
+root.configure(bg="#fce4ec")  # pastel hồng nhạt
+
+# ==== TIÊU ĐỀ ====
+lbl_title = tk.Label(root, text="ĐĂNG NHẬP", font=("Helvetica", 24, "bold"),
+                     fg="#ad1457", bg="#fce4ec")
+lbl_title.pack(pady=15)
+
+# ==== KHUNG CHÍNH ====
+frame = tk.Frame(root, bg="#ffffff", bd=0, relief="ridge")
+frame.pack(pady=10, padx=30, fill="x")
+
+# ==== ẢNH Ổ KHÓA ====
+>>>>>>> 01a701bcb6c4a6058ca43b311ed96d917fe743e7
 try:
     img = Image.open("lock.png")
     img = img.resize((100, 100))
@@ -140,9 +173,15 @@ try:
     lbl_img = tk.Label(frame, image=photo, bg="#ffffff")
     lbl_img.grid(row=0, column=0, rowspan=2, padx=20, pady=10)
 except:
+<<<<<<< HEAD
     pass
 
 # ==== NHÃN VÀ ENTRY ==== #
+=======
+    pass  # Nếu không có ảnh thì bỏ qua
+
+# ==== NHÃN & Ô NHẬP ====
+>>>>>>> 01a701bcb6c4a6058ca43b311ed96d917fe743e7
 tk.Label(frame, text="Tên đăng nhập:", font=("Arial", 12), bg="#ffffff").grid(row=0, column=1, sticky="w", pady=10, padx=5)
 entry_user = tk.Entry(frame, font=("Arial", 12), width=25, bg="#f8bbd0")
 entry_user.grid(row=0, column=2, padx=10)
@@ -151,6 +190,7 @@ tk.Label(frame, text="Mật khẩu:", font=("Arial", 12), bg="#ffffff").grid(row
 entry_pass = tk.Entry(frame, font=("Arial", 12), width=25, show="*", bg="#f8bbd0")
 entry_pass.grid(row=1, column=2, padx=10)
 
+<<<<<<< HEAD
 # ==== NÚT NGANG ==== #
 btn_frame = tk.Frame(frame, bg="white")
 btn_frame.grid(row=2, column=1, columnspan=2, pady=20)
@@ -166,12 +206,27 @@ btn_signup = tk.Button(btn_frame, text="Đăng ký", font=("Arial", 12, "bold"),
 btn_signup.grid(row=0, column=1, padx=10)
 
 # ==== NÚT THOÁT ==== #
+=======
+# ==== NÚT ====
+btn_login = tk.Button(frame, text="Đăng nhập", font=("Arial", 12, "bold"),
+                      bg="#f48fb1", fg="white", activebackground="#f06292",
+                      width=15, command=dang_nhap)
+btn_login.grid(row=2, column=1, columnspan=2, pady=20)
+
+>>>>>>> 01a701bcb6c4a6058ca43b311ed96d917fe743e7
 btn_exit = tk.Button(frame, text="Thoát", font=("Arial", 12, "bold"),
                      bg="#f8bbd0", fg="#ad1457", activebackground="#f06292",
                      width=15, command=thoat)
 btn_exit.grid(row=3, column=1, columnspan=2, pady=5)
 
+<<<<<<< HEAD
 # ==== PHÍM ENTER ==== #
 root.bind('<Return>', lambda event: dang_nhap())
 
+=======
+# ==== PHÍM ENTER ĐỂ ĐĂNG NHẬP ====
+root.bind('<Return>', lambda event: dang_nhap())
+
+# ==== CHẠY ====
+>>>>>>> 01a701bcb6c4a6058ca43b311ed96d917fe743e7
 root.mainloop()
