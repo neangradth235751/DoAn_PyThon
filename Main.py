@@ -26,14 +26,13 @@ def open_main_menu():
 
     # Danh sách các nút menu (icon_path, text, command)
     buttons = [
-        ("icon_login.png", "Đăng nhập", lambda: messagebox.showinfo("Đăng nhập", "Mở form đăng nhập")),
-        ("icon_staff.png", "Nhân viên", lambda: messagebox.showinfo("Nhân viên", "Mở danh sách nhân viên")),
-        ("icon_invoice.png", "Hóa đơn", lambda: messagebox.showinfo("Hóa đơn", "Mở hóa đơn bán hàng")),
-        ("icon_material.png", "Vật liệu", lambda: messagebox.showinfo("Vật liệu", "Mở danh mục vật liệu")),
-        ("icon_customer.png", "Khách hàng", lambda: messagebox.showinfo("Khách hàng", "Mở danh sách khách hàng")),
-        ("icon_goods.png", "Hàng hóa", lambda: messagebox.showinfo("Hàng hóa", "Mở quản lý hàng hóa")),
-        ("icon_supplier.png", "Nhà cung cấp", lambda: messagebox.showinfo("Nhà cung cấp", "Mở danh sách NCC")),
-        ("icon_exit.png", "Thoát", root.destroy)
+        ("👨‍💼 Nhân viên", lambda: messagebox.showinfo("Nhân viên", "Mở quản lý nhân viên")),
+        ("🧾 Hóa đơn bán hàng", lambda: messagebox.showinfo("Hóa đơn", "Mở danh sách hóa đơn")),
+        ("🧱 Vật liệu", lambda: messagebox.showinfo("Vật liệu", "Mở danh mục vật liệu")),
+        ("👥 Khách hàng", lambda: messagebox.showinfo("Khách hàng", "Mở danh sách khách hàng")),
+        ("📦 Hàng hóa", lambda: messagebox.showinfo("Hàng hóa", "Mở quản lý hàng hóa")),
+        ("🚚 Nhà cung cấp", lambda: messagebox.showinfo("Nhà cung cấp", "Mở danh sách nhà cung cấp")),
+        ("🔑 Đăng xuất", lambda: (menu.destroy(), main()))
     ]
 
     # ==== TẠO NÚT CÔNG CỤ ====
