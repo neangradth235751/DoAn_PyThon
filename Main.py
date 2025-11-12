@@ -8,6 +8,13 @@ def open_main_menu():
     root.title("CHƯƠNG TRÌNH QUẢN LÝ CỬA HÀNG VẬT LIỆU XÂY DỰNG")
     root.geometry("1000x600")
     root.resizable(False, False)
+###lkmysql
+    conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="123456789",
+    database="quanly_cuahangvatlieuxaydung"
+)
 
     # ==== ẢNH NỀN ====
     try:
