@@ -25,7 +25,7 @@ class NhanVien(tk.Tk):
             return
 
         # === Tiêu đề ===
-        tk.Label(self, text="QUẢN LÝ NHÂN VIÊN", font=("Times New Roman", 22, "bold"),
+        tk.Label(self, text="THÔNG TIN NHÂN VIÊN", font=("Times New Roman", 22, "bold"),
                  fg="#ad1457", bg="#fce4ec").pack(pady=10)
 
         # === Khung nhập liệu ===

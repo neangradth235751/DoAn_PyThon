@@ -16,7 +16,7 @@ class KhachHang(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Quản lý khách hàng")
-        self.geometry("900x550")
+        self.geometry("900x650")
         self.configure(bg="#fce4ec")  # pastel hồng dịu mắt
 
         # --- Tiêu đề ---

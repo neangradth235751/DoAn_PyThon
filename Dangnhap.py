@@ -26,7 +26,7 @@ def dang_nhap():
 
         if result:
             messagebox.showinfo("Thành công", "Đăng nhập thành công!")
-            root.destroy()  # mở giao diện chính sau này
+            root.destroy()  # sau này mở menu chính
         else:
             messagebox.showerror("Thất bại", "Sai tên đăng nhập hoặc mật khẩu!")
 
@@ -38,10 +38,15 @@ def dang_nhap():
             conn.close()
 
 
+def thoat():
+    if messagebox.askyesno("Thoát", "Bạn có chắc muốn thoát không?"):
+        root.destroy()
+
+
 # ==== CỬA SỔ CHÍNH ==== #
 root = tk.Tk()
-root.title("Đăng nhập - Quản Lí Cửa Hàng VLXD")
-root.geometry("520x360")
+root.title("Đăng nhập - Quản Lý Cửa Hàng VLXD")
+root.geometry("550x330")
 root.resizable(False, False)
 root.configure(bg="#fce4ec")
 
@@ -54,41 +59,59 @@ except:
 # ==== TIÊU ĐỀ ==== #
 lbl_title = tk.Label(
     root,
-    text="ĐĂNG NHẬP",
-    font=("Segoe UI Semibold", 28, "bold"),
+    text="ĐĂNG NHẬP HỆ THỐNG",
+    font=("Times New Roman", 22, "bold"),
     fg="#ad1457",
     bg="#fce4ec"
 )
-lbl_title.pack(pady=20)
+lbl_title.pack(pady=15)
 
-# ==== KHUNG ==== #
-frame = tk.Frame(root, bg="#ffffff", bd=0, relief="ridge")
+# ==== KHUNG TRẮNG ==== #
+frame = tk.Frame(root, bg="#ffffff", bd=2, relief="ridge")
 frame.pack(pady=10, padx=30, fill="x")
 
-# ==== ẢNH ==== #
+# ==== ẢNH Ổ KHÓA ==== #
 try:
-    img = Image.open("lock.png")
-    img = img.resize((100, 100))
-    photo = ImageTk.PhotoImage(img)
-    lbl_img = tk.Label(frame, image=photo, bg="#ffffff")
+    img_lock = Image.open("lock.png")
+    img_lock = img_lock.resize((100, 100))
+    photo_lock = ImageTk.PhotoImage(img_lock)
+    lbl_img = tk.Label(frame, image=photo_lock, bg="#ffffff")
     lbl_img.grid(row=0, column=0, rowspan=2, padx=20, pady=10)
 except:
-    pass
+    lbl_img = tk.Label(frame, text="🔒", font=("Arial", 50), bg="#ffffff")
+    lbl_img.grid(row=0, column=0, rowspan=2, padx=20, pady=10)
 
-# ==== NHÃN VÀ ENTRY ==== #
-tk.Label(frame, text="Tên đăng nhập:", font=("Arial", 12), bg="#ffffff").grid(row=0, column=1, sticky="w", pady=10, padx=5)
-entry_user = tk.Entry(frame, font=("Arial", 12), width=25, bg="#f8bbd0")
-entry_user.grid(row=0, column=2, padx=10)
+# ==== ICON NGƯỜI ==== #
+try:
+    img_user = Image.open("user.png")
+    img_user = img_user.resize((22, 22))
+    photo_user = ImageTk.PhotoImage(img_user)
+except:
+    photo_user = None
 
-tk.Label(frame, text="Mật khẩu:", font=("Arial", 12), bg="#ffffff").grid(row=1, column=1, sticky="w", pady=10, padx=5)
-entry_pass = tk.Entry(frame, font=("Arial", 12), width=25, show="*", bg="#f8bbd0")
+# ==== TÊN ĐĂNG NHẬP ==== #
+lbl_user = tk.Label(frame, text="Tên đăng nhập:", font=("Times New Roman", 13, "bold"), bg="#ffffff")
+lbl_user.grid(row=0, column=1, sticky="w", pady=10, padx=5)
+
+entry_user_frame = tk.Frame(frame, bg="#f8bbd0", bd=0)
+entry_user_frame.grid(row=0, column=2, padx=10)
+if photo_user:
+    tk.Label(entry_user_frame, image=photo_user, bg="#f8bbd0").pack(side="left", padx=5)
+entry_user = tk.Entry(entry_user_frame, font=("Times New Roman", 13), width=20, bd=0, bg="#f8bbd0")
+entry_user.pack(side="left", padx=2, pady=3)
+
+# ==== MẬT KHẨU ==== #
+lbl_pass = tk.Label(frame, text="Mật khẩu:", font=("Times New Roman", 13, "bold"), bg="#ffffff")
+lbl_pass.grid(row=1, column=1, sticky="w", pady=10, padx=5)
+
+entry_pass = tk.Entry(frame, font=("Times New Roman", 13), width=25, show="*", bg="#f8bbd0", bd=0)
 entry_pass.grid(row=1, column=2, padx=10)
 
-# ==== NÚT ĐĂNG NHẬP ==== #
+# ==== NÚT ==== #
 btn_login = tk.Button(
     root,
     text="Đăng nhập",
-    font=("Segoe UI Semibold", 14),
+    font=("Times New Roman", 14, "bold"),
     bg="#f48fb1",
     fg="white",
     activebackground="#f06292",
@@ -99,13 +122,19 @@ btn_login = tk.Button(
     relief="flat",
     cursor="hand2"
 )
-btn_login.pack(pady=25)
+btn_login.pack(pady=20)
 
-# ==== NÚT THOÁT ==== #
-btn_exit = tk.Button(frame, text="Thoát", font=("Arial", 12, "bold"),
-                     bg="#f8bbd0", fg="#ad1457", activebackground="#f06292",
-                     width=15, command=thoat)
-btn_exit.grid(row=3, column=1, columnspan=2, pady=5)
+btn_exit = tk.Button(
+    root,
+    text="Thoát",
+    font=("Times New Roman", 12, "bold"),
+    bg="#f8bbd0",
+    fg="#ad1457",
+    activebackground="#f06292",
+    width=12,
+    command=thoat
+)
+btn_exit.pack()
 
 # ==== PHÍM ENTER ==== #
 root.bind('<Return>', lambda event: dang_nhap())
