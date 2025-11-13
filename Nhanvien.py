@@ -6,7 +6,7 @@ import mysql.connector
 class NhanVien(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Quản Lý Nhân Viên")
+        self.title("Thông tin nhân Viên")
         self.geometry("1050x630")
         self.configure(bg="#fce4ec")
 
@@ -46,7 +46,6 @@ class NhanVien(tk.Tk):
         }
 
         # ComboBox lists
-        list_gioitinh = ["Nam", "Nữ"]
         list_diachi = ["Hà Nội","Đà Nẵng","Hồ Chí Minh","Cần Thơ","Hải Phòng","Huế",
                        "Bình Dương","Quảng Ninh","Nam Định","Nha Trang"]
         list_chucvu = ["Quản lý","Thu ngân","Bán hàng","Kế toán","Kho hàng","Nhân sự"]
@@ -67,13 +66,16 @@ class NhanVien(tk.Tk):
             tk.Label(frame_input, text=label, bg="#ffffff", font=("Times New Roman", 11, "bold")).grid(
                 row=i//4, column=(i%4)*2, sticky="w", padx=8, pady=4
             )
-            # ComboBox hoặc DateEntry hoặc Entry
+
             if key == "GioiTinh":
-                cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
-                                  values=list_gioitinh, width=18, state="readonly",
-                                  font=("Times New Roman", 11))
-                cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                self.vars[key].set("")
+                # RadioButton cho Giới tính
+                frame_radio = tk.Frame(frame_input, bg="#ffffff")
+                frame_radio.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4, sticky="w")
+                tk.Radiobutton(frame_radio, text="Nam", variable=self.vars[key], value="Nam", bg="#ffffff",
+                               font=("Times New Roman",11)).pack(side="left", padx=5)
+                tk.Radiobutton(frame_radio, text="Nữ", variable=self.vars[key], value="Nữ", bg="#ffffff",
+                               font=("Times New Roman",11)).pack(side="left", padx=5)
+                self.vars[key].set("")  # mặc định chưa chọn
 
             elif key == "DiaChi":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key],

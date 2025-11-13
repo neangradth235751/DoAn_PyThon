@@ -15,7 +15,7 @@ def get_connection():
 class VatLieu(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Quản lý vật liệu")
+        self.title("Thông tin vật liệu")
         self.geometry("950x650")
         self.configure(bg="#fce4ec")
 
@@ -38,7 +38,7 @@ class VatLieu(tk.Tk):
             "TenNCC": tk.StringVar()
         }
 
-        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Giá:", "Số lượng:", "Nhà cung cấp:"]
+        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Giá:", "Số lượng:", "Nhà cung cấp:"]
         keys = ["MaVL", "TenVL", "DonVi", "Gia", "SoLuong", "TenNCC"]
         list_donvi = ["Kg", "Bao", "Viên", "m3", "Lít", "Cây", "Tấm"]
 
