@@ -20,11 +20,11 @@ class KhachHang(tk.Tk):
         self.configure(bg="#fce4ec")  # pastel hồng dịu mắt
 
         # --- Tiêu đề ---
-        tk.Label(self, text="QUẢN LÝ KHÁCH HÀNG", font=("Helvetica", 20, "bold"),
+        tk.Label(self, text="THÔNG TIN KHÁCH HÀNG", font=("times new roman", 20, "bold"),
                  fg="#ad1457", bg="#fce4ec").pack(pady=10)
 
         # --- Khung nhập liệu ---
-        frame_input = tk.LabelFrame(self, text="Thông tin khách hàng", font=("Arial", 12, "bold"),
+        frame_input = tk.LabelFrame(self, text="Thông tin khách hàng", font=("times new roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=10)
         frame_input.pack(padx=15, pady=5, fill="x")
 
@@ -41,29 +41,29 @@ class KhachHang(tk.Tk):
                        "Huế","Bình Dương","Quảng Ninh","Nam Định","Nha Trang"]
 
         for i, (label, key) in enumerate(zip(labels, keys)):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10, "bold")).grid(
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("times new roman", 10, "bold")).grid(
                 row=i//2, column=(i%2)*2, sticky="w", padx=8, pady=5
             )
             if key == "DiaChi":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_diachi,
-                                  width=25, state="readonly", font=("Arial",11))
+                                  width=25, state="readonly", font=("times new roman",11))
                 cb.grid(row=i//2, column=(i%2)*2+1, padx=8, pady=5)
                 
             else:
                 tk.Entry(frame_input, textvariable=self.vars[key], width=25,
-                         font=("Arial", 11), bg="#f8bbd0").grid(
+                         font=("times new roman", 11), bg="#f8bbd0").grid(
                     row=i//2, column=(i%2)*2+1, padx=8, pady=5
                 )
 
         # --- Treeview ---
         columns = ("Mã KH", "Tên KH", "SĐT", "Địa Chỉ")
-        frame_table = tk.LabelFrame(self, text="Danh sách khách hàng", font=("Arial", 12, "bold"),
+        frame_table = tk.LabelFrame(self, text="Danh sách khách hàng", font=("times new roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=8, pady=8)
         frame_table.pack(padx=15, pady=10, fill="both", expand=True)
 
         style = ttk.Style()
-        style.configure("Treeview", rowheight=25, font=("Arial", 10))
-        style.configure("Treeview.Heading", font=("Arial", 11, "bold"))
+        style.configure("Treeview", rowheight=25, font=("Times New Roman", 10))
+        style.configure("Treeview.Heading", font=("Times New Roman", 11, "bold"))
         style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
 
         self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)

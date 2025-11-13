@@ -5,10 +5,10 @@ import mysql.connector
 
 class NhanVien(tk.Tk):
     def __init__(self):
-        super().__init__()
-        self.title("Quản Lý Nhân Viên")
-        self.geometry("1100x600")
-        self.configure(bg="#fce4ec")
+    super().__init__()
+    self.title("Quản Lý Nhân Viên")
+    self.geometry("1100x600")
+    self.configure(bg="SystemButtonFace") 
 
         # === Kết nối MySQL ===
         try:
