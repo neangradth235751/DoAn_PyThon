@@ -5,10 +5,10 @@ import mysql.connector
 
 class NhanVien(tk.Tk):
     def __init__(self):
-    super().__init__()
-    self.title("Quản Lý Nhân Viên")
-    self.geometry("1100x600")
-    self.configure(bg="SystemButtonFace") 
+        super().__init__()
+        self.title("Quản Lý Nhân Viên")
+        self.geometry("1050x630")
+        self.configure(bg="#fce4ec")
 
         # === Kết nối MySQL ===
         try:
@@ -25,11 +25,11 @@ class NhanVien(tk.Tk):
             return
 
         # === Tiêu đề ===
-        tk.Label(self, text="QUẢN LÝ NHÂN VIÊN", font=("Helvetica", 20, "bold"),
+        tk.Label(self, text="QUẢN LÝ NHÂN VIÊN", font=("Times New Roman", 22, "bold"),
                  fg="#ad1457", bg="#fce4ec").pack(pady=10)
 
         # === Khung nhập liệu ===
-        frame_input = tk.LabelFrame(self, text="Thông tin nhân viên", font=("Arial", 11, "bold"),
+        frame_input = tk.LabelFrame(self, text="Thông tin nhân viên", font=("Times New Roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=8)
         frame_input.pack(padx=15, pady=5, fill="x")
 
@@ -64,55 +64,55 @@ class NhanVien(tk.Tk):
         ]
 
         for i, (label, key) in enumerate(labels):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("Arial", 10, "bold")).grid(
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("Times New Roman", 11, "bold")).grid(
                 row=i//4, column=(i%4)*2, sticky="w", padx=8, pady=4
             )
             # ComboBox hoặc DateEntry hoặc Entry
             if key == "GioiTinh":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
                                   values=list_gioitinh, width=18, state="readonly",
-                                  font=("Arial", 11))
+                                  font=("Times New Roman", 11))
                 cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                self.vars[key].set("")  # mặc định trống
+                self.vars[key].set("")
 
             elif key == "DiaChi":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
                                   values=list_diachi, width=18, state="readonly",
-                                  font=("Arial", 11))
+                                  font=("Times New Roman", 11))
                 cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                self.vars[key].set("")  # mặc định trống
+                self.vars[key].set("")
 
             elif key == "ChucVu":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key],
                                   values=list_chucvu, width=18, state="readonly",
-                                  font=("Arial", 11))
+                                  font=("Times New Roman", 11))
                 cb.grid(row=i//4, column=(i%4)*2+1, padx=8, pady=4)
-                self.vars[key].set("")  # mặc định trống
+                self.vars[key].set("")
 
             elif key == "NgaySinh":
                 de = DateEntry(frame_input, textvariable=self.vars[key],
                                date_pattern='dd/mm/yyyy', width=18,
                                background="#f48fb1", foreground="white",
-                               borderwidth=2, font=("Arial", 11))
+                               borderwidth=2, font=("Times New Roman", 11))
                 de.grid(row=i//4, column=(i%4)*2+1, padx=5, pady=5)
-                self.vars[key].set("")  # mặc định trống
+                self.vars[key].set("")
 
             else:
                 tk.Entry(frame_input, textvariable=self.vars[key],
-                         width=22, font=("Arial", 11), bg="#f8bbd0").grid(
+                         width=22, font=("Times New Roman", 11), bg="#f8bbd0").grid(
                     row=i//4, column=(i%4)*2+1, padx=5, pady=5)
 
         # === Treeview ===
         columns = ("MaNV", "TenNV", "GioiTinh", "DiaChi", "DienThoai", "NgaySinh", "ChucVu", "Luong")
         col_texts = ["Mã NV","Tên NV","Giới tính","Địa chỉ","Điện thoại","Ngày sinh","Chức vụ","Lương"]
 
-        frame_table = tk.LabelFrame(self, text="Danh sách nhân viên", font=("Arial", 11, "bold"),
+        frame_table = tk.LabelFrame(self, text="Danh sách nhân viên", font=("Times New Roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=8, pady=8)
         frame_table.pack(padx=15, pady=5, fill="both", expand=True)
 
         style = ttk.Style()
-        style.configure("Treeview", rowheight=25, font=("Arial", 10))
-        style.configure("Treeview.Heading", font=("Arial", 10, "bold"))
+        style.configure("Treeview", rowheight=25, font=("Times New Roman", 11))
+        style.configure("Treeview.Heading", font=("Times New Roman", 12, "bold"))
         style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
 
         self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)
@@ -133,7 +133,7 @@ class NhanVien(tk.Tk):
         # === Nút chức năng ===
         frame_btn = tk.Frame(self, bg="#fce4ec")
         frame_btn.pack(pady=5)
-        btn_style = {"font":("Arial",10,"bold"),"fg":"white","width":10,"relief":"flat"}
+        btn_style = {"font":("Times New Roman",11,"bold"),"fg":"white","width":11,"relief":"flat"}
 
         tk.Button(frame_btn, text="Thêm", bg="#f48fb1", command=self.them_nv, **btn_style).grid(row=0,column=0,padx=3)
         tk.Button(frame_btn, text="Xóa", bg="#e57373", command=self.xoa_nv, **btn_style).grid(row=0,column=1,padx=3)

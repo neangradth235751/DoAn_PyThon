@@ -16,64 +16,68 @@ class VatLieu(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Quản lý vật liệu")
-        self.geometry("950x550")
+        self.geometry("950x650")
         self.configure(bg="#fce4ec")
 
         # --- Tiêu đề ---
-        tk.Label(self, text="THÔNG TIN VẬT LIỆU", font=("times new roman", 20, "bold"),
+        tk.Label(self, text="THÔNG TIN VẬT LIỆU", font=("Times New Roman", 20, "bold"),
                  fg="#ad1457", bg="#fce4ec").pack(pady=10)
 
         # --- Khung nhập liệu ---
-        frame_input = tk.LabelFrame(self, text="Thông tin vật liệu", font=("times new roman", 12, "bold"),
+        frame_input = tk.LabelFrame(self, text="Thông tin vật liệu", font=("Times New Roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=10)
         frame_input.pack(padx=15, pady=5, fill="x")
 
+        # ======== Biến ========
         self.vars = {
             "MaVL": tk.StringVar(),
             "TenVL": tk.StringVar(),
             "DonVi": tk.StringVar(),
             "Gia": tk.StringVar(),
-            "SoLuong": tk.StringVar()
-            
+            "SoLuong": tk.StringVar(),
+            "TenNCC": tk.StringVar()
         }
 
-        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Giá:", "Số lượng:"]
-        keys = ["MaVL", "TenVL", "DonVi", "Gia", "SoLuong"]
+        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Giá:", "Số lượng:", "Nhà cung cấp:"]
+        keys = ["MaVL", "TenVL", "DonVi", "Gia", "SoLuong", "TenNCC"]
         list_donvi = ["Kg", "Bao", "Viên", "m3", "Lít", "Cây", "Tấm"]
 
         # Lấy danh sách nhà cung cấp từ MySQL
         self.ncc_dict = self.get_ncc_dict()
         list_ncc = list(self.ncc_dict.keys())
 
+        # ======== Tạo ô nhập liệu / combobox ========
         for i, (label, key) in enumerate(zip(labels, keys)):
-            tk.Label(frame_input, text=label, bg="#ffffff", font=("times new roman", 10, "bold")).grid(
+            tk.Label(frame_input, text=label, bg="#ffffff", font=("Times New Roman", 10, "bold")).grid(
                 row=i // 2, column=(i % 2) * 2, sticky="w", padx=8, pady=5
             )
+
             if key == "DonVi":
                 cb = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_donvi,
-                                  width=22, state="readonly", font=("times new roman", 11))
+                                  width=22, state="readonly", font=("Times New Roman", 11))
                 cb.grid(row=i // 2, column=(i % 2) * 2 + 1, padx=8, pady=5)
-                cb.current(0)
+                self.vars[key].set("")  # mặc định trống
+
             elif key == "TenNCC":
                 cbncc = ttk.Combobox(frame_input, textvariable=self.vars[key], values=list_ncc,
-                                     width=22, state="readonly", font=("times new roman", 11))
+                                     width=22, state="readonly", font=("Times New Roman", 11))
                 cbncc.grid(row=i // 2, column=(i % 2) * 2 + 1, padx=8, pady=5)
-                if list_ncc:
-                    cbncc.current(0)
+                self.vars[key].set("")  # mặc định trống
+
             else:
                 tk.Entry(frame_input, textvariable=self.vars[key], width=25,
-                         font=("times new roman", 11), bg="#f8bbd0").grid(
+                         font=("Times New Roman", 11), bg="#f8bbd0").grid(
                     row=i // 2, column=(i % 2) * 2 + 1, padx=8, pady=5
                 )
 
         # --- Treeview ---
         columns = ("Mã VL", "Tên VL", "Đơn vị", "Giá", "Số lượng", "Nhà cung cấp")
-        frame_table = tk.LabelFrame(self, text="Danh sách vật liệu", font=("times new roman", 12, "bold"),
+        frame_table = tk.LabelFrame(self, text="Danh sách vật liệu", font=("Times New Roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=8, pady=8)
         frame_table.pack(padx=15, pady=10, fill="both", expand=True)
 
         style = ttk.Style()
-        style.configure("Treeview", rowheight=22, font=("times new roman", 10))
+        style.configure("Treeview", rowheight=22, font=("Times New Roman", 10))
         style.configure("Treeview.Heading", font=("Times New Roman", 11, "bold"))
         style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
 
@@ -83,20 +87,20 @@ class VatLieu(tk.Tk):
             self.tree.column(col, width=130, anchor="center")
         self.tree.pack(side="left", fill="both", expand=True)
 
-        # màu xen kẽ
         self.tree.tag_configure('evenrow', background='#f9f9f9')
         self.tree.tag_configure('oddrow', background='#ffffff')
 
         vsb = ttk.Scrollbar(frame_table, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=vsb.set)
         vsb.pack(side="right", fill="y")
+
         self.tree.bind("<<TreeviewSelect>>", self.on_select)
         self.selected_index = None
 
         # --- Nút chức năng ---
         frame_btn = tk.Frame(self, bg="#fce4ec")
         frame_btn.pack(pady=5)
-        btn_style = {"font": ("times new roman", 10, "bold"), "fg": "white", "width": 12, "relief": "flat"}
+        btn_style = {"font": ("Times New Roman", 10, "bold"), "fg": "white", "width": 12, "relief": "flat"}
 
         tk.Button(frame_btn, text="Thêm", bg="#f48fb1", command=self.them, **btn_style).grid(row=0, column=0, padx=3)
         tk.Button(frame_btn, text="Xóa", bg="#e57373", command=self.xoa, **btn_style).grid(row=0, column=1, padx=3)
@@ -147,9 +151,17 @@ class VatLieu(tk.Tk):
 
     def them(self):
         ma, ten, donvi, gia, sl, tenncc = [v.get().strip() for v in self.vars.values()]
+
         if not ma or not ten:
             messagebox.showwarning("Thiếu dữ liệu", "Vui lòng nhập Mã và Tên vật liệu!")
             return
+        if not donvi:
+            messagebox.showwarning("Thiếu dữ liệu", "Vui lòng chọn Đơn vị!")
+            return
+        if not tenncc:
+            messagebox.showwarning("Thiếu dữ liệu", "Vui lòng chọn Nhà cung cấp!")
+            return
+
         try:
             mancc = self.ncc_dict.get(tenncc, None)
             conn = get_connection()
@@ -162,6 +174,7 @@ class VatLieu(tk.Tk):
             conn.close()
             self.load_data()
             self.bo_qua()
+            messagebox.showinfo("Thành công", "Đã thêm vật liệu mới!")
         except mysql.connector.Error as err:
             messagebox.showerror("Lỗi MySQL", f"Lỗi thêm: {err}")
 
@@ -178,6 +191,7 @@ class VatLieu(tk.Tk):
             conn.close()
             self.load_data()
             self.bo_qua()
+            messagebox.showinfo("Đã xóa", "Đã xóa vật liệu thành công!")
         except mysql.connector.Error as err:
             messagebox.showerror("Lỗi MySQL", f"Lỗi xóa: {err}")
 
@@ -200,6 +214,7 @@ class VatLieu(tk.Tk):
             conn.close()
             self.load_data()
             self.bo_qua()
+            messagebox.showinfo("Cập nhật", "Đã sửa thông tin vật liệu!")
         except mysql.connector.Error as err:
             messagebox.showerror("Lỗi MySQL", f"Lỗi sửa: {err}")
 
