@@ -1,11 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from datetime import datetime
+from tkcalendar import DateEntry
 import mysql.connector
 
-# =========================
-# KẾT NỐI MYSQL
-# =========================
+# ===== KẾT NỐI MYSQL =====
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -14,276 +12,197 @@ def get_connection():
         database="quanly_cuahangvatlieuxaydung"
     )
 
-# =========================
-# ĐỊNH DẠNG SỐ THÀNH VNĐ
-# =========================
-def format_vnd(n):
-    return f"{n:,.0f} VNĐ".replace(",", ".")
-
-# =========================
-# APP TKINTER
-# =========================
-class HoaDonApp(tk.Tk):
+class HoaDonXuatFull(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("HÓA ĐƠN XUẤT VẬT LIỆU")
+        self.title("Hóa Đơn Xuất")
         self.geometry("1200x650")
-        self.configure(bg="#ffe6f2")
+        self.configure(bg="#fce4ec")
 
-        # Title
-        tk.Label(self, text="CHI TIẾT HÓA ĐƠN XUẤT",
-                 font=("Arial", 24, "bold"), bg="#ffe6f2",
-                 fg="#cc0066").pack(pady=10)
+        # ===== Biến =====
+        self.vars_ct = {
+            "MaVL": tk.StringVar(),
+            "SoLuong": tk.StringVar(),
+            "SoLuongKho": tk.StringVar(),
+            "DonVi": tk.StringVar(),
+            "DonGia": tk.StringVar(),
+            "ThanhTien": tk.StringVar()
+        }
 
-        # THÔNG TIN HÓA ĐƠN
-        frame_info = tk.LabelFrame(self, text="Thông tin hóa đơn", 
-                                   bg="#ffe6f2", font=("Arial", 11, "bold"))
-        frame_info.pack(fill="x", padx=15, pady=5)
+        # ===== Tiêu đề =====
+        tk.Label(self, text="DANH MỤC HÓA ĐƠN XUẤT", font=("Times New Roman",20,"bold"),
+                 bg="#fce4ec", fg="#ad1457").pack(pady=10)
 
-        tk.Label(frame_info, text="Mã HD:", bg="#ffe6f2").grid(row=0, column=0, pady=5)
-        self.txt_ma = tk.Entry(frame_info, width=20)
-        self.txt_ma.grid(row=0, column=1, padx=5)
-        self.txt_ma.insert(0, "HD001")
+        # ===== Khung chi tiết HĐ =====
+        frame_ct = tk.LabelFrame(self, text="Chi tiết Hóa Đơn Xuất", font=("Times New Roman",12,"bold"),
+                                 fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=8)
+        frame_ct.pack(padx=15, pady=5, fill="x")
 
-        tk.Label(frame_info, text="Tên NV:", bg="#ffe6f2").grid(row=0, column=2)
-        self.txt_nv = tk.Entry(frame_info, width=25)
-        self.txt_nv.grid(row=0, column=3, padx=5)
+        tk.Label(frame_ct, text="Mã Vật liệu:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=0,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct, textvariable=self.vars_ct["MaVL"], width=20, font=("Times New Roman",11,"bold"), bg="#f8bbd0").grid(row=0,column=1,padx=5,pady=5)
 
-        tk.Label(frame_info, text="Tên KH:", bg="#ffe6f2").grid(row=1, column=0)
-        self.txt_kh = tk.Entry(frame_info, width=25)
-        self.txt_kh.grid(row=1, column=1, padx=5)
+        tk.Label(frame_ct, text="Số lượng tồn kho:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=2,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct, textvariable=self.vars_ct["SoLuongKho"], width=20, font=("Times New Roman",11,"bold"), state="readonly", bg="#e0e0e0").grid(row=0,column=3,padx=5,pady=5)
 
-        tk.Label(frame_info, text="SĐT:", bg="#ffe6f2").grid(row=1, column=2)
-        self.txt_sdt = tk.Entry(frame_info, width=20)
-        self.txt_sdt.grid(row=1, column=3, padx=5)
+        tk.Label(frame_ct, text="Số lượng xuất:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=1,column=0,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct, textvariable=self.vars_ct["SoLuong"], width=20, font=("Times New Roman",11,"bold"), bg="#f8bbd0").grid(row=1,column=1,padx=5,pady=5)
 
-        tk.Label(frame_info, text="Ngày lập:", bg="#ffe6f2").grid(row=2, column=0)
-        self.txt_date = tk.Entry(frame_info, width=30)
-        self.txt_date.grid(row=2, column=1, padx=5)
-        self.txt_date.insert(0, datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        tk.Label(frame_ct, text="Đơn vị:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=1,column=2,padx=5,pady=5,sticky="w")
+        ttk.Combobox(frame_ct, textvariable=self.vars_ct["DonVi"], values=["Kg","Cái","Mét","Chiếc","Bao","Viên","m3","Lít","Cây","Tấm"], state="readonly", width=18, font=("Times New Roman",11,"bold")).grid(row=1,column=3,padx=5,pady=5)
 
-        # CHỌN VẬT LIỆU
-        frame_select = tk.LabelFrame(self, text="Chọn vật liệu", 
-                                     bg="#ffe6f2", font=("Arial", 11, "bold"))
-        frame_select.pack(fill="x", padx=15, pady=5)
+        tk.Label(frame_ct, text="Đơn giá:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=2,column=0,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct, textvariable=self.vars_ct["DonGia"], width=20, font=("Times New Roman",11,"bold"), bg="#f8bbd0").grid(row=2,column=1,padx=5,pady=5)
 
-        tk.Label(frame_select, text="Tên VL:", bg="#ffe6f2").grid(row=0, column=0, pady=5)
-        self.cbo_vl = ttk.Combobox(frame_select, width=30)
-        self.cbo_vl.grid(row=0, column=1, padx=5)
-        self.cbo_vl.bind("<<ComboboxSelected>>", self.load_info)
+        tk.Label(frame_ct, text="Thành tiền:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=2,column=2,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct, textvariable=self.vars_ct["ThanhTien"], width=20, font=("Times New Roman",11,"bold"), bg="#f8bbd0", state="readonly").grid(row=2,column=3,padx=5,pady=5)
 
-        tk.Label(frame_select, text="Đơn vị tính:", bg="#ffe6f2").grid(row=0, column=2)
-        self.txt_dvt = tk.Entry(frame_select, width=20)
-        self.txt_dvt.grid(row=0, column=3)
+        # ===== Tự tính Thành tiền =====
+        def update_tt(*args):
+            try:
+                sl = float(self.vars_ct["SoLuong"].get())
+                dg = float(self.vars_ct["DonGia"].get())
+                self.vars_ct["ThanhTien"].set(round(sl*dg,2))
+            except:
+                self.vars_ct["ThanhTien"].set("")
+        self.vars_ct["SoLuong"].trace("w", update_tt)
+        self.vars_ct["DonGia"].trace("w", update_tt)
 
-        tk.Label(frame_select, text="SL tồn kho:", bg="#ffe6f2").grid(row=1, column=0)
-        self.txt_ton = tk.Entry(frame_select, width=20)
-        self.txt_ton.grid(row=1, column=1)
+        # ===== Treeview =====
+        frame_table = tk.LabelFrame(self, text="Danh sách chi tiết xuất", font=("Times New Roman",12,"bold"),
+                                    fg="#ad1457", bg="#ffffff", bd=2, relief="ridge")
+        frame_table.pack(padx=15,pady=5, fill="both", expand=True)
 
-        tk.Label(frame_select, text="SL xuất:", bg="#ffe6f2").grid(row=1, column=2)
-        self.txt_sl = tk.Entry(frame_select, width=20)
-        self.txt_sl.grid(row=1, column=3)
+        columns = ("MaHDX","MaVL","SoLuongKho","SoLuong","DonVi","DonGia","ThanhTien")
+        self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)
 
-        # LIST VIEW
-        frame_list = tk.LabelFrame(self, text="Danh sách xuất hàng", 
-                                   bg="#ffe6f2", font=("Arial", 11, "bold"))
-        frame_list.pack(fill="both", expand=True, padx=15, pady=5)
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Times New Roman",11,"bold"))
+        style.configure("Treeview", rowheight=25)
+        style.map("Treeview", background=[('selected', '#f48fb1')])
 
-        self.tree = ttk.Treeview(frame_list, columns=("ten","dvt","sl","dg","tt"), show="headings", height=10)
-        self.tree.heading("ten", text="Tên VL")
-        self.tree.heading("dvt", text="Đơn vị tính")
-        self.tree.heading("sl", text="SL xuất")
-        self.tree.heading("dg", text="Đơn giá")
-        self.tree.heading("tt", text="Thành tiền")
+        for col in columns:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=120, anchor="center")
 
-        self.tree.column("ten", width=250, anchor="center")
-        self.tree.column("dvt", width=150, anchor="center")
-        self.tree.column("sl", width=100, anchor="center")
-        self.tree.column("dg", width=120, anchor="center")
-        self.tree.column("tt", width=150, anchor="center")
-
+        self.tree.tag_configure('oddrow', background="#fce4ec")
+        self.tree.tag_configure('evenrow', background="#ffffff")
         self.tree.pack(fill="both", expand=True)
+        self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
-        # BUTTON ZONE
-        frame_btn = tk.Frame(self, bg="#ffe6f2")
-        frame_btn.pack(pady=10)
+        # ===== Nút chức năng =====
+        frame_btn = tk.Frame(self, bg="#fce4ec")
+        frame_btn.pack(pady=5)
+        btn_style = {"font":("Times New Roman",11,"bold"),"fg":"white","width":10,"relief":"flat"}
+        tk.Button(frame_btn,text="Thêm", bg="#f48fb1", command=self.them, **btn_style).grid(row=0,column=0,padx=5)
+        tk.Button(frame_btn,text="Xóa", bg="#e57373", command=self.xoa, **btn_style).grid(row=0,column=1,padx=5)
+        tk.Button(frame_btn,text="Sửa", bg="#ffb74d", command=self.sua, **btn_style).grid(row=0,column=2,padx=5)
+        tk.Button(frame_btn,text="Bỏ qua", bg="#90a4ae", command=self.boqua, **btn_style).grid(row=0,column=3,padx=5)
+        tk.Button(frame_btn,text="Lưu", bg="#81c784", command=self.luu, **btn_style).grid(row=0,column=4,padx=5)
+        tk.Button(frame_btn,text="Đóng", bg="#ce93d8", command=self.destroy, **btn_style).grid(row=0,column=5,padx=5)
 
-        ttk.Button(frame_btn, text="Thêm", command=self.them).grid(row=0, column=0, padx=5)
-        ttk.Button(frame_btn, text="Xóa", command=self.xoa).grid(row=0, column=1, padx=5)
-        ttk.Button(frame_btn, text="Sửa", command=self.sua).grid(row=0, column=2, padx=5)
-        ttk.Button(frame_btn, text="Lưu", command=self.luu).grid(row=0, column=3, padx=5)
-        ttk.Button(frame_btn, text="Hủy", command=self.huy).grid(row=0, column=4, padx=5)
-        ttk.Button(frame_btn, text="In hóa đơn", command=self.inbill).grid(row=0, column=5, padx=5)
+        self.selected_id = None
 
-        # Load dữ liệu vật liệu từ MySQL
-        self.load_vatlieu()
+    # ===== CRUD & các hàm =====
+    def on_select(self,event):
+        selected = self.tree.selection()
+        if not selected: return
+        vals = self.tree.item(selected,"values")
+        self.vars_ct["MaVL"].set(vals[1])
+        self.vars_ct["SoLuongKho"].set(vals[2])
+        self.vars_ct["SoLuong"].set(vals[3])
+        self.vars_ct["DonVi"].set(vals[4])
+        self.vars_ct["DonGia"].set(vals[5])
+        self.selected_id = vals[0]
 
-    # =========================
-    # LOAD VẬT LIỆU TỪ MYSQL
-    # =========================
-    def load_vatlieu(self):
-        self.vat_lieu = {}
+    def them(self):
+        mahdx = f"HDX{len(self.tree.get_children())+1:03d}"
         try:
             conn = get_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT MaVL, TenVL, DonVi, SoLuong, DonGia FROM vatlieu")
-            rows = cursor.fetchall()
-            for r in rows:
-                self.vat_lieu[r[1]] = {"MaVL": r[0], "dvt": r[2], "ton": r[3], "gia": float(r[4])}
-            self.cbo_vl['values'] = list(self.vat_lieu.keys())
+            cursor.execute("SELECT SoLuong, DonVi, Gia FROM vatlieu WHERE MaVL=%s", (self.vars_ct["MaVL"].get(),))
+            result = cursor.fetchone()
+            if not result:
+                messagebox.showwarning("Lỗi","Vật liệu không tồn tại!")
+                return
+            so_luong_kho, donvi, dongia = result
+            self.vars_ct["SoLuongKho"].set(so_luong_kho)
+            self.vars_ct["DonVi"].set(donvi)
+            self.vars_ct["DonGia"].set(dongia)
+            sl_xuat = int(self.vars_ct["SoLuong"].get())
+            if sl_xuat > so_luong_kho:
+                messagebox.showwarning("Lỗi","Số lượng xuất vượt quá kho!")
+                return
+            tag = 'evenrow' if len(self.tree.get_children()) % 2 == 0 else 'oddrow'
+            self.tree.insert("", "end", values=(mahdx,
+                                                self.vars_ct["MaVL"].get(),
+                                                so_luong_kho,
+                                                sl_xuat,
+                                                donvi,
+                                                dongia,
+                                                round(sl_xuat*dongia,2)),
+                             tags=(tag,))
             cursor.close()
             conn.close()
-        except mysql.connector.Error as e:
-            messagebox.showerror("MySQL Error", str(e))
+            self.boqua()
+        except mysql.connector.Error as err:
+            messagebox.showerror("Lỗi MySQL", str(err))
 
-    # =========================
-    # LOAD THÔNG TIN KHO CHO VL CHỌN
-    # =========================
-    def load_info(self, event):
-        ten = self.cbo_vl.get()
-        if ten in self.vat_lieu:
-            self.txt_dvt.delete(0, tk.END)
-            self.txt_dvt.insert(0, self.vat_lieu[ten]["dvt"])
-            self.txt_ton.delete(0, tk.END)
-            self.txt_ton.insert(0, self.vat_lieu[ten]["ton"])
-
-    # =========================
-    # THÊM
-    # =========================
-    def them(self):
-        ten = self.cbo_vl.get()
-        if ten not in self.vat_lieu:
-            messagebox.showerror("Lỗi", "Vui lòng chọn vật liệu hợp lệ!")
-            return
-        if not self.txt_sl.get().isdigit():
-            messagebox.showerror("Lỗi", "Số lượng xuất phải là số nguyên")
-            return
-
-        sl = int(self.txt_sl.get())
-        if sl > self.vat_lieu[ten]["ton"]:
-            messagebox.showerror("Lỗi", f"Số lượng tồn chỉ còn: {self.vat_lieu[ten]['ton']}")
-            return
-
-        dg = self.vat_lieu[ten]["gia"]
-        tt = sl * dg
-        self.tree.insert("", tk.END, values=(ten, self.vat_lieu[ten]["dvt"], sl, format_vnd(dg), format_vnd(tt)))
-
-        self.vat_lieu[ten]["ton"] -= sl
-        self.txt_ton.delete(0, tk.END)
-        self.txt_ton.insert(0, self.vat_lieu[ten]["ton"])
-
-    # =========================
-    # XÓA
-    # =========================
     def xoa(self):
-        item = self.tree.focus()
-        if item:
-            v = self.tree.item(item, "values")
-            ten = v[0]
-            sl = int(v[2])
-            self.vat_lieu[ten]["ton"] += sl
-            self.tree.delete(item)
+        if not self.selected_id:
+            messagebox.showwarning("Chú ý","Chọn một dòng để xóa!")
+            return
+        for item in self.tree.get_children():
+            if self.tree.item(item,"values")[0] == self.selected_id:
+                self.tree.delete(item)
+                break
+        self.boqua()
 
-    # =========================
-    # SỬA
-    # =========================
     def sua(self):
-        item = self.tree.focus()
-        if not item:
+        if not self.selected_id:
+            messagebox.showwarning("Chú ý","Chọn một dòng để sửa!")
             return
-        ten = self.cbo_vl.get()
-        if ten not in self.vat_lieu:
-            messagebox.showerror("Lỗi", "Vui lòng chọn vật liệu hợp lệ!")
-            return
-        if not self.txt_sl.get().isdigit():
-            messagebox.showerror("Lỗi", "Số lượng xuất phải là số nguyên")
-            return
+        for item in self.tree.get_children():
+            if self.tree.item(item,"values")[0] == self.selected_id:
+                sl_xuat = int(self.vars_ct["SoLuong"].get())
+                sl_kho = int(self.vars_ct["SoLuongKho"].get())
+                if sl_xuat > sl_kho:
+                    messagebox.showwarning("Lỗi","Số lượng xuất vượt kho!")
+                    return
+                self.tree.item(item, values=(self.selected_id,
+                                             self.vars_ct["MaVL"].get(),
+                                             sl_kho,
+                                             sl_xuat,
+                                             self.vars_ct["DonVi"].get(),
+                                             self.vars_ct["DonGia"].get(),
+                                             round(sl_xuat*float(self.vars_ct["DonGia"].get()),2)))
+                break
+        self.boqua()
 
-        sl_new = int(self.txt_sl.get())
-        v_old = self.tree.item(item, "values")
-        sl_old = int(v_old[2])
+    def boqua(self):
+        for v in self.vars_ct.values():
+            v.set("")
+        self.selected_id = None
 
-        self.vat_lieu[ten]["ton"] += sl_old
-        if sl_new > self.vat_lieu[ten]["ton"]:
-            messagebox.showerror("Lỗi", f"Số lượng tồn chỉ còn: {self.vat_lieu[ten]['ton']}")
-            self.vat_lieu[ten]["ton"] -= sl_old
-            return
-
-        dg = self.vat_lieu[ten]["gia"]
-        tt = sl_new * dg
-        self.tree.item(item, values=(ten, self.vat_lieu[ten]["dvt"], sl_new, format_vnd(dg), format_vnd(tt)))
-
-        self.vat_lieu[ten]["ton"] -= sl_new
-        self.txt_ton.delete(0, tk.END)
-        self.txt_ton.insert(0, self.vat_lieu[ten]["ton"])
-
-    # =========================
-    # LƯU HÓA ĐƠN VÀ CHI TIẾT VÀO MYSQL
-    # =========================
     def luu(self):
         try:
             conn = get_connection()
             cursor = conn.cursor()
-            mahd = self.txt_ma.get()
-            tennv = self.txt_nv.get()
-            tenkh = self.txt_kh.get()
-            sdt = self.txt_sdt.get()
-            ngay = datetime.now()
-
-            cursor.execute(
-                "INSERT INTO hoadonxuat (MaHD, TenNV, TenKH, SDT, NgayLap) VALUES (%s, %s, %s, %s, %s)",
-                (mahd, tennv, tenkh, sdt, ngay)
-            )
-
             for item in self.tree.get_children():
-                v = self.tree.item(item, "values")
-                mavl = self.vat_lieu[v[0]]["MaVL"]
+                vals = self.tree.item(item,"values")
+                # Lưu vào chitiethoadonxuat
                 cursor.execute(
-                    "INSERT INTO chitiethoadonxuat (MaHD, MaVL, SoLuong, DonGia) VALUES (%s, %s, %s, %s)",
-                    (mahd, mavl, int(v[2]), float(self.vat_lieu[v[0]]["gia"]))
+                    "INSERT INTO chitiethoadonxuat (MaHDX, MaVL, SoLuong, SoLuongKho, DonVi, DonGia, ThanhTien) VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                    vals
                 )
-
+                # Cập nhật tồn kho
+                cursor.execute("UPDATE vatlieu SET SoLuong = SoLuong - %s WHERE MaVL=%s", (vals[3], vals[1]))
             conn.commit()
             cursor.close()
             conn.close()
-            messagebox.showinfo("Lưu", "Đã lưu hóa đơn vào MySQL!")
-        except mysql.connector.Error as e:
-            messagebox.showerror("MySQL Error", str(e))
+            messagebox.showinfo("Thành công","Đã lưu hóa đơn xuất và cập nhật kho!")
+        except mysql.connector.Error as err:
+            messagebox.showerror("Lỗi MySQL", str(err))
 
-    # =========================
-    # HỦY
-    # =========================
-    def huy(self):
-        for item in self.tree.get_children():
-            self.tree.delete(item)
-
-    # =========================
-    # IN HÓA ĐƠN
-    # =========================
-    def inbill(self):
-        bill = f"""
-====== HÓA ĐƠN XUẤT VẬT LIỆU ======
-Mã HD: {self.txt_ma.get()}
-Tên NV: {self.txt_nv.get()}
-Tên KH: {self.txt_kh.get()}
-SĐT: {self.txt_sdt.get()}
-Ngày lập: {self.txt_date.get()}
------------------------------------
-Tên VL - SL - Đơn giá - Thành tiền
-"""
-        tong = 0
-        for item in self.tree.get_children():
-            v = self.tree.item(item, "values")
-            bill += f"{v[0]} - {v[2]} - {v[3]} - {v[4]}\n"
-            tong += int(v[2]) * self.vat_lieu[v[0]]["gia"]
-
-        bill += f"\nTỔNG CỘNG: {format_vnd(tong)}\n"
-        bill += "\nCẢM ƠN QUÝ KHÁCH!"
-        messagebox.showinfo("HÓA ĐƠN", bill)
-
-# =========================
-# RUN APP
-# =========================
-if __name__ == "__main__":
-    app = HoaDonApp()
+if __name__=="__main__":
+    app = HoaDonXuatFull()
     app.mainloop()
