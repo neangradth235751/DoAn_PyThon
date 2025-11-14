@@ -33,13 +33,13 @@ class VatLieu(tk.Tk):
             "MaVL": tk.StringVar(),
             "TenVL": tk.StringVar(),
             "DonVi": tk.StringVar(),
-            "Gia": tk.StringVar(),
-            "SoLuong": tk.StringVar(),
+            "DonGia": tk.StringVar(),
+            "SoLuongKho": tk.StringVar(),
             "TenNCC": tk.StringVar()
         }
 
-        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Giá:", "Số lượng:", "Nhà cung cấp:"]
-        keys = ["MaVL", "TenVL", "DonVi", "Gia", "SoLuong", "TenNCC"]
+        labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Đơn Giá:", "Số lượng kho:", "Nhà cung cấp:"]
+        keys = ["MaVL", "TenVL", "DonVi", "DonGia", "SoLuongTonKho", "TenNCC"]
         list_donvi = ["Kg", "Bao", "Viên", "m3", "Lít", "Cây", "Tấm"]
 
         # Lấy danh sách nhà cung cấp từ MySQL
@@ -71,7 +71,7 @@ class VatLieu(tk.Tk):
                 )
 
         # --- Treeview ---
-        columns = ("Mã VL", "Tên VL", "Đơn vị", "Giá", "Số lượng", "Nhà cung cấp")
+        columns = ("Mã VL", "Tên VL", "Đơn vị", "Đơn Giá", "Số lượng kho", "Nhà cung cấp")
         frame_table = tk.LabelFrame(self, text="Danh sách vật liệu", font=("Times New Roman", 12, "bold"),
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=8, pady=8)
         frame_table.pack(padx=15, pady=10, fill="both", expand=True)

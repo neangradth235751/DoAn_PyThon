@@ -24,7 +24,7 @@ class ChiTietHoaDonXuatFull(tk.Tk):
             "MaVL": tk.StringVar(),
             "TenVL": tk.StringVar(),
             "SoLuong": tk.StringVar(),
-            "SoLuongTonKho": tk.StringVar(),
+            "SoLuongKho": tk.StringVar(),
             "DonVi": tk.StringVar(),
             "DonGia": tk.StringVar(),
             "ThanhTien": tk.StringVar()
@@ -61,14 +61,14 @@ class ChiTietHoaDonXuatFull(tk.Tk):
                                   values=[vl[1] for vl in self.ds_vatlieu],
                                   state="readonly", width=25, font=("Times New Roman", 11))
         self.cb_vl.grid(row=0, column=3, padx=5, pady=5)
-        # Khi chọn tên vật liệu → tự tìm MaVL và tồn kho
+        # Khi chọn tên vật liệu → MaVL và kho
         def select_ma_vl(event):
             ten = self.vars_ct["TenVL"].get()
             for row in self.ds_vatlieu:
                 if row[1] == ten:
                     self.vars_ct["MaVL"].set(row[0])
                     self.vars_ct["DonVi"].set(row[2])
-                    self.vars_ct["SoLuongTonKho"].set(row[5])
+                    self.vars_ct["SoLuongKho"].set(row[5])
                     self.vars_ct["DonGia"].set(row[3])
                     break
         self.cb_vl.bind("<<ComboboxSelected>>", select_ma_vl)
@@ -80,10 +80,10 @@ class ChiTietHoaDonXuatFull(tk.Tk):
                  bg="#f8bbd0", width=25,
                  font=("Times New Roman", 11, "bold")).grid(row=1, column=1, padx=5, pady=5)
 
-        # --- Số lượng tồn kho ---
-        tk.Label(frame_ct, text="Số lượng tồn kho:", bg="#ffffff",
+        # --- Số lượn kho ---
+        tk.Label(frame_ct, text="Số lượng kho:", bg="#ffffff",
                  font=("Times New Roman", 11, "bold")).grid(row=1, column=2, padx=5, pady=5)
-        tk.Entry(frame_ct, textvariable=self.vars_ct["SoLuongTonKho"],
+        tk.Entry(frame_ct, textvariable=self.vars_ct["SoLuongKho"],
                  bg="#f8bbd0", width=25,
                  font=("Times New Roman", 11, "bold"), state="readonly").grid(row=1, column=3, padx=5, pady=5)
 
@@ -128,7 +128,7 @@ class ChiTietHoaDonXuatFull(tk.Tk):
                                     fg="#ad1457", bg="#ffffff")
         frame_table.pack(padx=5, pady=5, fill="both", expand=True)
 
-        columns = ("Hóa Đơn Xuất","Vật liệu","Số Lượng","Số Lượng Tồn Kho","Đơn Vị","Đơn Giá","Thành Tiền")
+        columns = ("Hóa Đơn Xuất","Vật liệu","Số Lượng","Số Lượng Kho","Đơn Vị","Đơn Giá","Thành Tiền")
         self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=10)
 
         style = ttk.Style()
@@ -209,7 +209,7 @@ class ChiTietHoaDonXuatFull(tk.Tk):
         self.vars_ct["MaHDX"].set(vals[0])
         self.vars_ct["TenVL"].set(vals[1])
         self.vars_ct["SoLuong"].set(vals[2])
-        self.vars_ct["SoLuongTonKho"].set(vals[3])
+        self.vars_ct["SoLuongKho"].set(vals[3])
         self.vars_ct["DonVi"].set(vals[4])
         self.vars_ct["DonGia"].set(vals[5])
         self.vars_ct["ThanhTien"].set(vals[6])
@@ -218,7 +218,7 @@ class ChiTietHoaDonXuatFull(tk.Tk):
     def them(self):
         # Kiểm tra tồn kho
         sl = float(self.vars_ct["SoLuong"].get())
-        slton = float(self.vars_ct["SoLuongTonKho"].get())
+        slton = float(self.vars_ct["SoLuongKho"].get())
         if sl > slton:
             messagebox.showwarning("Cảnh báo", "Số lượng xuất vượt tồn kho!")
             return
@@ -251,7 +251,7 @@ class ChiTietHoaDonXuatFull(tk.Tk):
         for item in self.tree.get_children():
             if self.tree.item(item)["values"][0] == self.selected_id:
                 sl = float(self.vars_ct["SoLuong"].get())
-                slton = float(self.vars_ct["SoLuongTonKho"].get())
+                slton = float(self.vars_ct["SoLuongKho"].get())
                 if sl > slton + sl:
                     messagebox.showwarning("Cảnh báo", "Số lượng xuất vượt tồn kho!")
                     return
