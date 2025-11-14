@@ -54,9 +54,7 @@ class HoaDonNhap(tk.Tk):
         tk.Entry(frame_input, textvariable=self.vars["MaHDN"], width=20, font=("Times New Roman",11), bg="#f8bbd0").grid(row=0,column=1,padx=5,pady=5)
 
         tk.Label(frame_input, text="Nhà cung cấp:", bg="#ffffff", font=("Times New Roman", 11, "bold")).grid(row=0,column=2,padx=5,pady=5, sticky="w")
-        self.cmbNCC = ttk.Combobox(frame_input, textvariable=self.vars["MaNCC"], values=self.cmb_ncc_values,
-                                   state="readonly", width=18, font=("Times New Roman",11))
-        self.cmbNCC.grid(row=0,column=3,padx=5,pady=5)
+        tk.Entry(frame_input, textvariable=self.vars["MaNCC"], width=20, font=("Times New Roman",11), bg="#f8bbd0").grid(row=0,column=3,padx=5,pady=5)
 
         tk.Label(frame_input, text="Ngày lập:", bg="#ffffff", font=("Times New Roman", 11, "bold")).grid(row=1,column=0,padx=5,pady=5, sticky="w")
         self.deNgayLap = DateEntry(frame_input, textvariable=self.vars["NgayLap"], date_pattern='yyyy-mm-dd',
@@ -64,9 +62,7 @@ class HoaDonNhap(tk.Tk):
         self.deNgayLap.grid(row=1,column=1,padx=5,pady=5)
 
         tk.Label(frame_input, text="Nhân viên:", bg="#ffffff", font=("Times New Roman", 11, "bold")).grid(row=1,column=2,padx=5,pady=5, sticky="w")
-        self.cmbNV = ttk.Combobox(frame_input, textvariable=self.vars["MaNV"], values=self.cmb_nv_values,
-                                  state="readonly", width=18, font=("Times New Roman",11))
-        self.cmbNV.grid(row=1,column=3,padx=5,pady=5)
+        tk.Entry(frame_input, textvariable=self.vars["MaNV"], width=20, font=("Times New Roman",11), bg="#f8bbd0").grid(row=1,column=3,padx=5,pady=5)
 
         # === Treeview hiển thị dữ liệu ===
         columns = ("MaHDN","TenNCC","NgayLap","TenNV")

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from tkcalendar import DateEntry
 import mysql.connector
 
 # ======== KẾT NỐI MYSQL ========
@@ -7,148 +8,150 @@ def get_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="123456789",  # đổi theo mật khẩu MySQL của bạn
+        password="123456789",
         database="quanly_cuahangvatlieuxaydung"
     )
-
-# ======== CLASS CHI TIẾT HÓA ĐƠN NHẬP ========
-class ChiTietHoaDonNhap(tk.Tk):
+class HoaDonNhapFull(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Chi Tiết Hóa Đơn Nhập")
-        self.geometry("1100x650")
-        self.configure(bg="#dfeaf5")
+        self.title("Hóa Đơn Nhập")
+        self.geometry("1100x600")
+        self.configure(bg="#fce4ec")
 
-        # ========== HEADER ==========
-        tk.Label(
-            self, text="CHI TIẾT HÓA ĐƠN NHẬP",
-            font=("Times New Roman", 26, "bold"),
-            bg="#1565c0", fg="white", pady=10
-        ).pack(fill="x")
-
-        # ========== KHUNG CHÍNH ==========
-        frame_main = tk.Frame(self, bg="#dfeaf5")
-        frame_main.pack(fill="both", expand=True, padx=10, pady=10)
-
-        # ========== KHUNG TRÁI ==========
-        frame_left = tk.LabelFrame(
-            frame_main, text="Cập nhật Chi tiết Hóa Đơn Nhập",
-            font=("Times New Roman", 12, "bold"),
-            bg="#dfeaf5", padx=20, pady=10
-        )
-        frame_left.place(x=10, y=10, width=760, height=330)
-
-        # Biến dùng chung
-        self.vars = {
-            "MaHDN": tk.StringVar(value="HDN001"),
-            "NgayLap": tk.StringVar(value="2025-11-01"),
-            "NCC": tk.StringVar(value="Công ty Thép ABC"),
-            "NhanVien": tk.StringVar(value="Nguyễn Văn A"),
-
+        # ===== Biến =====
+        self.vars_hd = {
+            "MaHDN": tk.StringVar(),
+            "NgayLap": tk.StringVar(),
+            "NhanVien": tk.StringVar()
+        }
+        self.vars_ct = {
             "VatLieu": tk.StringVar(),
             "SoLuong": tk.StringVar(),
-            "DonGia": tk.StringVar(),
             "DonVi": tk.StringVar(),
+            "DonGia": tk.StringVar(),
             "ThanhTien": tk.StringVar()
         }
 
-        # ========== THÔNG TIN HÓA ĐƠN ==========
-        tk.Label(frame_left, text="Số hóa đơn:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=0, column=0, sticky="w", pady=3)
-        tk.Entry(frame_left, textvariable=self.vars["MaHDN"], width=20, font=("Times New Roman", 12)).grid(row=0, column=1, pady=3)
+        # ===== Khung Hóa đơn =====
+        frame_hd = tk.LabelFrame(self, text="Thông tin Hóa Đơn", font=("Times New Roman",12,"bold"),
+                                 fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=8)
+        frame_hd.pack(padx=15, pady=5, fill="x")
 
-        tk.Label(frame_left, text="Ngày lập HĐ:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=0, column=2, sticky="w", pady=3)
-        tk.Entry(frame_left, textvariable=self.vars["NgayLap"], width=20, font=("Times New Roman", 12)).grid(row=0, column=3, pady=3)
+        tk.Label(frame_hd,text="Hóa đơn:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=0,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_hd,textvariable=self.vars_hd["MaHDN"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=0,column=1,padx=5,pady=5)
 
-        tk.Label(frame_left, text="Nhà cung cấp:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=1, column=0, sticky="w", pady=3)
-        tk.Entry(frame_left, textvariable=self.vars["NCC"], width=20, font=("Times New Roman", 12)).grid(row=1, column=1, pady=3)
+        tk.Label(frame_hd,text="Ngày lập:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=2,padx=5,pady=5,sticky="w")
+        DateEntry(frame_hd,textvariable=self.vars_hd["NgayLap"],date_pattern='yyyy-mm-dd',width=20).grid(row=0,column=3,padx=5,pady=5)
 
-        tk.Label(frame_left, text="Nhân viên:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=1, column=2, sticky="w", pady=3)
-        tk.Entry(frame_left, textvariable=self.vars["NhanVien"], width=20, font=("Times New Roman", 12)).grid(row=1, column=3, pady=3)
+        tk.Label(frame_hd,text="Nhân viên:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=4,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_hd,textvariable=self.vars_hd["NhanVien"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=0,column=5,padx=5,pady=5)
 
-        # ========== THÔNG TIN CHI TIẾT ==========
-        tk.Label(frame_left, text="Vật liệu:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=2, column=0, sticky="w", pady=3)
-        ttk.Combobox(frame_left, textvariable=self.vars["VatLieu"],
-                     values=self.load_vatlieu(), width=18).grid(row=2, column=1)
+        # ===== Khung chi tiết HĐ =====
+        frame_ct = tk.LabelFrame(self, text="Chi tiết Hóa Đơn", font=("Times New Roman",12,"bold"),
+                                 fg="#ad1457", bg="#ffffff", bd=2, relief="ridge", padx=10, pady=8)
+        frame_ct.pack(padx=15, pady=5, fill="x")
 
-        tk.Label(frame_left, text="Số lượng:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=2, column=2, sticky="w")
-        tk.Entry(frame_left, textvariable=self.vars["SoLuong"], width=20, font=("Times New Roman", 12)).grid(row=2, column=3)
+        tk.Label(frame_ct,text="Vật liệu:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=0,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct,textvariable=self.vars_ct["VatLieu"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=0,column=1,padx=5,pady=5)
 
-        tk.Label(frame_left, text="Đơn vị:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=3, column=0, sticky="w", pady=3)
-        tk.Entry(frame_left, textvariable=self.vars["DonVi"], width=20, font=("Times New Roman", 12)).grid(row=3, column=1)
+        tk.Label(frame_ct,text="Số lượng:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=0,column=2,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct,textvariable=self.vars_ct["SoLuong"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=0,column=3,padx=5,pady=5)
 
-        tk.Label(frame_left, text="Đơn giá:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=3, column=2, sticky="w")
-        tk.Entry(frame_left, textvariable=self.vars["DonGia"], width=20, font=("Times New Roman", 12)).grid(row=3, column=3)
+        tk.Label(frame_ct,text="Đơn vị:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=1,column=0,padx=5,pady=5,sticky="w")
+        ttk.Combobox(frame_ct,textvariable=self.vars_ct["DonVi"], values=["Kg","Cái","Mét","Chiếc"], state="readonly", width=18, font=("Times New Roman",11,"bold")).grid(row=1,column=1,padx=5,pady=5)
 
-        tk.Label(frame_left, text="Thành tiền:", bg="#dfeaf5", font=("Times New Roman", 12)).grid(row=4, column=2, sticky="w", pady=3)
-        tk.Entry(frame_left, textvariable=self.vars["ThanhTien"], width=20, font=("Times New Roman", 12)).grid(row=4, column=3)
+        tk.Label(frame_ct,text="Đơn giá:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=1,column=2,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct,textvariable=self.vars_ct["DonGia"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=1,column=3,padx=5,pady=5)
 
-        # ========== KHUNG CHỨC NĂNG ==========
-        frame_btn = tk.LabelFrame(
-            frame_main, text="Chức năng",
-            font=("Times New Roman", 12, "bold"),
-            bg="#dfeaf5", padx=10, pady=10
-        )
-        frame_btn.place(x=800, y=10, width=280, height=330)
+        tk.Label(frame_ct,text="Thành tiền:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=2,column=0,padx=5,pady=5,sticky="w")
+        tk.Entry(frame_ct,textvariable=self.vars_ct["ThanhTien"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0",state="readonly").grid(row=2,column=1,padx=5,pady=5)
 
-        for text in ["Thêm", "Sửa", "Xóa", "Lưu", "Hủy", "In"]:
-            tk.Button(frame_btn, text=text, width=14, height=1,
-                      font=("Times New Roman", 12, "bold"),
-                      bg="#c5e1a5").pack(pady=7)
+        # ===== Tự tính Thành tiền =====
+        def update_tt(*args):
+            try:
+                sl = float(self.vars_ct["SoLuong"].get())
+                dg = float(self.vars_ct["DonGia"].get())
+                self.vars_ct["ThanhTien"].set(round(sl*dg,2))
+            except:
+                self.vars_ct["ThanhTien"].set("")
+        self.vars_ct["SoLuong"].trace("w", update_tt)
+        self.vars_ct["DonGia"].trace("w", update_tt)
 
-        # ========== TABLE ==========
-        frame_table = tk.Frame(frame_main, bg="white")
-        frame_table.place(x=10, y=350, width=1070, height=270)
+        # ===== Treeview =====
+        frame_table = tk.LabelFrame(self, text="Danh sách chi tiết HĐ", font=("Times New Roman",12,"bold"),
+                                    fg="#ad1457", bg="#ffffff", bd=2, relief="ridge")
+        frame_table.pack(padx=15,pady=5, fill="both", expand=True)
 
-        columns = ("VatLieu", "SoLuong", "DonVi", "DonGia", "ThanhTien")
-        self.table = ttk.Treeview(frame_table, columns=columns, show="headings", height=10)
-
-        self.table.heading("VatLieu", text="Vật liệu")
-        self.table.heading("SoLuong", text="Số lượng")
-        self.table.heading("DonVi", text="Đơn vị")
-        self.table.heading("DonGia", text="Đơn giá")
-        self.table.heading("ThanhTien", text="Thành tiền")
+        columns = ("MaHDN","VatLieu","SoLuong","DonVi","DonGia")
+        self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)
 
         for col in columns:
-            self.table.column(col, width=200)
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=120, anchor="center")
+        self.tree.pack(fill="both", expand=True)
+        self.tree.bind("<<TreeviewSelect>>", self.on_select)
 
-        self.table.pack(fill="both", expand=True)
+        # ===== Nút chức năng =====
+        frame_btn = tk.Frame(self, bg="#fce4ec")
+        frame_btn.pack(pady=5)
+        btn_style = {"font":("Times New Roman",11,"bold"),"fg":"white","width":10,"relief":"flat"}
+        tk.Button(frame_btn,text="Thêm", bg="#f48fb1", command=self.them, **btn_style).grid(row=0,column=0,padx=5)
+        tk.Button(frame_btn,text="Xóa", bg="#e57373", command=self.xoa, **btn_style).grid(row=0,column=1,padx=5)
+        tk.Button(frame_btn,text="Sửa", bg="#ffb74d", command=self.sua, **btn_style).grid(row=0,column=2,padx=5)
+        tk.Button(frame_btn,text="Bỏ qua", bg="#90a4ae", command=self.boqua, **btn_style).grid(row=0,column=3,padx=5)
+        tk.Button(frame_btn,text="Đóng", bg="#ce93d8", command=self.destroy, **btn_style).grid(row=0,column=4,padx=5)
 
-        # Load dữ liệu từ database
-        self.load_table_data()
+        self.selected_id = None
 
-    # ======== LOAD VẬT LIỆU CHO COMBOBOX ==========
-    def load_vatlieu(self):
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
-            cursor.execute("SELECT TenVL FROM vatlieu")
-            vatlieu = [row[0] for row in cursor.fetchall()]
-            conn.close()
-            return vatlieu
-        except mysql.connector.Error as err:
-            messagebox.showerror("Lỗi kết nối", str(err))
-            return []
+    # ===== Hàm CRUD =====
+    def on_select(self,event):
+        selected = self.tree.selection()
+        if not selected: return
+        vals = self.tree.item(selected,"values")
+        self.vars_hd["MaHDN"].set(vals[0])
+        self.vars_ct["VatLieu"].set(vals[1])
+        self.vars_ct["SoLuong"].set(vals[2])
+        self.vars_ct["DonVi"].set(vals[3])
+        self.vars_ct["DonGia"].set(vals[4])
+        self.selected_id = selected[0]
 
-    # ======== LOAD DỮ LIỆU CHO BẢNG ==========
-    def load_table_data(self):
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
-            query = """
-                SELECT v.TenVL, c.SoLuong, c.DonVi, c.DonGia, c.ThanhTien
-                FROM chitiethoadonnhap c
-                JOIN vatlieu v ON c.MaVL = v.MaVL
-            """
-            cursor.execute(query)
-            rows = cursor.fetchall()
-            for row in rows:
-                self.table.insert("", "end", values=row)
-            conn.close()
-        except mysql.connector.Error as err:
-            messagebox.showerror("Lỗi truy vấn", str(err))
+    def them(self):
+        vals = (
+            self.vars_hd["MaHDN"].get(),
+            self.vars_ct["VatLieu"].get(),
+            self.vars_ct["SoLuong"].get(),
+            self.vars_ct["DonVi"].get(),
+            self.vars_ct["DonGia"].get()
+        )
+        self.tree.insert("", "end", values=vals)
+        self.boqua()
 
+    def xoa(self):
+        selected = self.tree.selection()
+        if selected:
+            self.tree.delete(selected[0])
+            self.boqua()
 
-# ========== CHẠY ==========
-if __name__ == "__main__":
-    app = ChiTietHoaDonNhap()
+    def sua(self):
+        selected = self.tree.selection()
+        if selected and self.selected_id:
+            vals = (
+                self.vars_hd["MaHDN"].get(),
+                self.vars_ct["VatLieu"].get(),
+                self.vars_ct["SoLuong"].get(),
+                self.vars_ct["DonVi"].get(),
+                self.vars_ct["DonGia"].get()
+            )
+            self.tree.item(self.selected_id, values=vals)
+            self.boqua()
+
+    def boqua(self):
+        for v in self.vars_hd.values():
+            v.set("")
+        for v in self.vars_ct.values():
+            v.set("")
+        self.selected_id = None
+
+if __name__=="__main__":
+    app = HoaDonNhapFull()
     app.mainloop()
