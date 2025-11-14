@@ -46,20 +46,31 @@ class HoaDonNhapFull(tk.Tk):
                                  padx=10, pady=8)
         frame_ct.pack(padx=15, pady=5, fill="x")
 
-        # --- Hóa đơn ---
-        tk.Label(frame_ct, text="Hóa đơn nhập:", bg="#ffffff",
+        # --- Hóa đơn nhập ---
+        tk.Label(frame_ct, text="Hóa đơn nhập:", bg="#ffffff", 
                  font=("Times New Roman", 11, "bold")).grid(row=0, column=0, padx=5, pady=5)
-        tk.Entry(frame_ct, textvariable=self.vars_ct["MaHDN"],
-                 bg="#f8bbd0", width=25,
+        tk.Entry(frame_ct, textvariable=self.vars_ct["MaHDN"], 
+                 bg="#f8bbd0", width=25, 
                  font=("Times New Roman", 11, "bold")).grid(row=0, column=1, padx=5, pady=5)
 
         # --- Vật liệu ---
         tk.Label(frame_ct, text="Vật liệu:", bg="#ffffff",
-                 font=("Times New Roman", 11, "bold")).grid(row=0, column=2, padx=5, pady=5, sticky="w")
-        tk.Entry(frame_ct, textvariable=self.vars_ct["TenVL"],
-                 bg="#f8bbd0", width=25,
-                 font=("Times New Roman", 11, "bold")).grid(row=0, column=3, padx=5, pady=5)
+                 font=("Times New Roman", 11, "bold")).grid(row=0, column=2, sticky="w", padx=5, pady=5)
+        cb_vl = ttk.Combobox(frame_ct, 
+                             textvariable=self.vars_ct["TenVL"],
+                             values=[vl[1] for vl in self.ds_vatlieu],
+                             state="readonly",
+                             width=25, font=("Times New Roman", 11))
+        cb_vl.grid(row=0, column=3, padx=5, pady=5)
 
+        # Khi chọn tên vật liệu → tự lấy MaVL
+        def select_ma_vl(event):
+            ten = self.vars_ct["TenVL"].get()
+            for row in self.ds_vatlieu:
+                if row[1] == ten:
+                    self.vars_ct["MaVL"].set(row[0])
+                    break
+        cb_vl.bind("<<ComboboxSelected>>", select_ma_vl)
 
         # --- Số lượng ---
         tk.Label(frame_ct, text="Số lượng:", bg="#ffffff",
@@ -68,13 +79,15 @@ class HoaDonNhapFull(tk.Tk):
                  bg="#f8bbd0", width=25,
                  font=("Times New Roman", 11, "bold")).grid(row=1, column=1, padx=5, pady=5)
 
-        # --- Đơn vị (Combobox) ---
+        # --- Đơn vị  ---
         tk.Label(frame_ct, text="Đơn vị:", bg="#ffffff",
                  font=("Times New Roman", 11, "bold")).grid(row=1, column=2, padx=5, pady=5)
-        ttk.Combobox(frame_ct, textvariable=self.vars_ct["DonVi"],
-                     values=["Kg", "Cái", "Mét", "Bao", "Viên", "Cây", "Tấm"],
-                     state="readonly", width=25,
-                     font=("Times New Roman", 11)).grid(row=1, column=3, padx=5, pady=5)
+        cb_dv = ttk.Combobox(frame_ct, textvariable=self.vars_ct["DonVi"],
+                             values=["Kg", "Cái", "Mét", "Bao", "Viên", "Cây", "Tấm"],
+                             state="readonly", width=25,
+                             font=("Times New Roman", 11))
+        cb_dv.grid(row=1, column=3, padx=5, pady=5)
+          
 
         # --- Đơn giá ---
         tk.Label(frame_ct, text="Đơn giá:", bg="#ffffff",
@@ -182,7 +195,6 @@ class HoaDonNhapFull(tk.Tk):
         if not sel:
             return
         vals = self.tree.item(sel)["values"]
-
         self.selected_id = vals[0]
 
         self.vars_ct["MaHDN"].set(vals[0])
@@ -195,7 +207,6 @@ class HoaDonNhapFull(tk.Tk):
     # ================== CRUD ==================
     def them(self):
         mahd = f"HD{len(self.tree.get_children())+1:03d}"
-
         self.tree.insert("", "end",
                          values=(mahd,
                                  self.vars_ct["TenVL"].get(),
@@ -209,7 +220,6 @@ class HoaDonNhapFull(tk.Tk):
         if not self.selected_id:
             messagebox.showwarning("Cảnh báo", "Bạn chưa chọn dòng để xóa!")
             return
-
         for item in self.tree.get_children():
             if self.tree.item(item)["values"][0] == self.selected_id:
                 self.tree.delete(item)
@@ -220,7 +230,6 @@ class HoaDonNhapFull(tk.Tk):
         if not self.selected_id:
             messagebox.showwarning("Cảnh báo", "Bạn chưa chọn dòng để sửa!")
             return
-
         for item in self.tree.get_children():
             if self.tree.item(item)["values"][0] == self.selected_id:
                 self.tree.item(item, values=(
@@ -243,23 +252,18 @@ class HoaDonNhapFull(tk.Tk):
     def luu(self):
         conn = get_connection()
         cursor = conn.cursor()
-
         cursor.execute("DELETE FROM chitiethoadonnhap")  # ghi lại toàn bộ
-
         for row in self.tree.get_children():
             vals = self.tree.item(row)["values"]
-
             tenvl = vals[1]
             mavl = None
             for x in self.ds_vatlieu:
                 if x[1] == tenvl:
                     mavl = x[0]
-
             cursor.execute("""
                 INSERT INTO chitiethoadonnhap(MaHDN, MaVL, SoLuong, DonVi, DonGia, ThanhTien)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, (vals[0], mavl, vals[2], vals[3], vals[4], vals[5]))
-
         conn.commit()
         conn.close()
         messagebox.showinfo("Thành công", "Đã lưu dữ liệu vào MySQL!")
