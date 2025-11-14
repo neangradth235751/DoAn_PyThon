@@ -11,6 +11,7 @@ def get_connection():
         password="123456789",
         database="quanly_cuahangvatlieuxaydung"
     )
+
 class HoaDonNhapFull(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -58,7 +59,8 @@ class HoaDonNhapFull(tk.Tk):
         tk.Entry(frame_ct,textvariable=self.vars_ct["SoLuong"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=0,column=3,padx=5,pady=5)
 
         tk.Label(frame_ct,text="Đơn vị:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=1,column=0,padx=5,pady=5,sticky="w")
-        ttk.Combobox(frame_ct,textvariable=self.vars_ct["DonVi"], values=["Kg","Cái","Mét","Chiếc"], state="readonly", width=18, font=("Times New Roman",11,"bold")).grid(row=1,column=1,padx=5,pady=5)
+        ttk.Combobox(frame_ct,textvariable=self.vars_ct["DonVi"], values=["Kg","Cái","Mét","Chiếc","Bao","Viên","m3","Lít","Cây","Tấm"],
+                     state="readonly", width=18, font=("Times New Roman",11,"bold")).grid(row=1,column=1,padx=5,pady=5)
 
         tk.Label(frame_ct,text="Đơn giá:", bg="#ffffff", font=("Times New Roman",11,"bold")).grid(row=1,column=2,padx=5,pady=5,sticky="w")
         tk.Entry(frame_ct,textvariable=self.vars_ct["DonGia"], width=20,font=("Times New Roman",11,"bold"),bg="#f8bbd0").grid(row=1,column=3,padx=5,pady=5)
@@ -82,7 +84,7 @@ class HoaDonNhapFull(tk.Tk):
                                     fg="#ad1457", bg="#ffffff", bd=2, relief="ridge")
         frame_table.pack(padx=15,pady=5, fill="both", expand=True)
 
-        columns = ("MaHDN","VatLieu","SoLuong","DonVi","DonGia")
+        columns = ("MaHDN","MaVL","SoLuong","DonVi","DonGia","ThanhTien")
         self.tree = ttk.Treeview(frame_table, columns=columns, show="headings", height=12)
 
         for col in columns:
@@ -103,7 +105,25 @@ class HoaDonNhapFull(tk.Tk):
 
         self.selected_id = None
 
-    # ===== Hàm CRUD =====
+        # ===== Load dữ liệu từ MySQL =====
+        self.load_data()
+
+    # ===== Load dữ liệu từ MySQL =====
+    def load_data(self):
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT MaHDN, MaVL, SoLuong, DonVi, DonGia, ThanhTien FROM chitiethoadonnhap")
+            rows = cursor.fetchall()
+            self.tree.delete(*self.tree.get_children())
+            for row in rows:
+                self.tree.insert("", "end", values=row)
+            cursor.close()
+            conn.close()
+        except mysql.connector.Error as err:
+            messagebox.showerror("Lỗi MySQL", str(err))
+
+    # ===== CRUD =====
     def on_select(self,event):
         selected = self.tree.selection()
         if not selected: return
@@ -113,37 +133,70 @@ class HoaDonNhapFull(tk.Tk):
         self.vars_ct["SoLuong"].set(vals[2])
         self.vars_ct["DonVi"].set(vals[3])
         self.vars_ct["DonGia"].set(vals[4])
-        self.selected_id = selected[0]
+        self.selected_id = vals[0]
 
     def them(self):
-        vals = (
-            self.vars_hd["MaHDN"].get(),
-            self.vars_ct["VatLieu"].get(),
-            self.vars_ct["SoLuong"].get(),
-            self.vars_ct["DonVi"].get(),
-            self.vars_ct["DonGia"].get()
-        )
-        self.tree.insert("", "end", values=vals)
-        self.boqua()
+        mahd = self.vars_hd["MaHDN"].get()
+        mavl = self.vars_ct["VatLieu"].get()
+        sl = self.vars_ct["SoLuong"].get()
+        dv = self.vars_ct["DonVi"].get()
+        dg = self.vars_ct["DonGia"].get()
+        tt = self.vars_ct["ThanhTien"].get()
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO chitiethoadonnhap (MaHDN, MaVL, SoLuong, DonVi, DonGia, ThanhTien) VALUES (%s,%s,%s,%s,%s,%s)",
+                (mahd, mavl, sl, dv, dg, tt)
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+            self.load_data()
+            self.boqua()
+        except mysql.connector.Error as err:
+            messagebox.showerror("Lỗi MySQL", str(err))
 
     def xoa(self):
-        selected = self.tree.selection()
-        if selected:
-            self.tree.delete(selected[0])
+        if not self.selected_id:
+            messagebox.showwarning("Chú ý", "Chọn một dòng để xóa!")
+            return
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM chitiethoadonnhap WHERE MaHDN=%s", (self.selected_id,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            self.load_data()
             self.boqua()
+        except mysql.connector.Error as err:
+            messagebox.showerror("Lỗi MySQL", str(err))
 
     def sua(self):
-        selected = self.tree.selection()
-        if selected and self.selected_id:
-            vals = (
-                self.vars_hd["MaHDN"].get(),
-                self.vars_ct["VatLieu"].get(),
-                self.vars_ct["SoLuong"].get(),
-                self.vars_ct["DonVi"].get(),
-                self.vars_ct["DonGia"].get()
+        if not self.selected_id:
+            messagebox.showwarning("Chú ý", "Chọn một dòng để sửa!")
+            return
+        mahd = self.vars_hd["MaHDN"].get()
+        mavl = self.vars_ct["VatLieu"].get()
+        sl = self.vars_ct["SoLuong"].get()
+        dv = self.vars_ct["DonVi"].get()
+        dg = self.vars_ct["DonGia"].get()
+        tt = self.vars_ct["ThanhTien"].get()
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE chitiethoadonnhap SET MaVL=%s, SoLuong=%s, DonVi=%s, DonGia=%s, ThanhTien=%s WHERE MaHDN=%s",
+                (mavl, sl, dv, dg, tt, self.selected_id)
             )
-            self.tree.item(self.selected_id, values=vals)
+            conn.commit()
+            cursor.close()
+            conn.close()
+            self.load_data()
             self.boqua()
+        except mysql.connector.Error as err:
+            messagebox.showerror("Lỗi MySQL", str(err))
 
     def boqua(self):
         for v in self.vars_hd.values():
