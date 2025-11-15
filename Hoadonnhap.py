@@ -89,17 +89,17 @@ class HoaDonNhap(tk.Tk):
         # ===== NÚT =====
         frame_btn = tk.Frame(self, bg="#fce4ec")
         frame_btn.pack(pady=5)
+        btn_style = {"font":("Times New Roman",11,"bold"),"fg":"white","width":12,"relief":"flat"}
 
-        tk.Button(frame_btn,text="Thêm", bg="#f48fb1", fg="white", width=12, command=self.them).grid(row=0,column=0,padx=3)
-        tk.Button(frame_btn,text="Xóa", bg="#e57373", fg="white", width=12, command=self.xoa).grid(row=0,column=1,padx=3)
-        tk.Button(frame_btn,text="Sửa", bg="#ffb74d", fg="white", width=12, command=self.sua).grid(row=0,column=2,padx=3)
-        tk.Button(frame_btn,text="Bỏ qua", bg="#90a4ae", fg="white", width=12, command=self.boqua).grid(row=0,column=3,padx=3)
-        tk.Button(frame_btn,text="Lưu", bg="#81c784", fg="white", width=12, command=self.luu).grid(row=0,column=4,padx=3)
-        tk.Button(frame_btn,text="Chi tiết", bg="#4fc3f7", fg="white", width=12, command=self.mo_chitiet).grid(row=0,column=5,padx=3)
-        tk.Button(frame_btn,text="Đóng", bg="#ce93d8", fg="white", width=12, command=self.destroy).grid(row=0,column=6,padx=3)
+        tk.Button(frame_btn,text="Thêm", bg="#f48fb1", command=self.them, **btn_style).grid(row=0,column=0,padx=3)
+        tk.Button(frame_btn,text="Xóa", bg="#e57373", command=self.xoa, **btn_style).grid(row=0,column=1,padx=3)
+        tk.Button(frame_btn,text="Sửa", bg="#ffb74d", command=self.sua, **btn_style).grid(row=0,column=2,padx=3)
+        tk.Button(frame_btn,text="Lưu", bg="#81c784", command=self.luu, **btn_style).grid(row=0,column=3,padx=3)
+        tk.Button(frame_btn,text="Bỏ qua", bg="#90a4ae", command=self.boqua, **btn_style).grid(row=0,column=4,padx=3)
+        tk.Button(frame_btn,text="Chi tiết", bg="#4fc3f7", command=self.mo_chitiet, **btn_style).grid(row=0,column=5,padx=3)
+        tk.Button(frame_btn,text="Đóng", bg="#ce93d8", command=self.destroy, **btn_style).grid(row=0,column=6,padx=3)
 
-        self.sua_mode = False
-        self.selected_ma = None
+        self.selected_ma=None
         self.load_data()
 
     # ===== LOAD NCC & NV =====
@@ -245,11 +245,13 @@ class ChiTietHDN(tk.Toplevel):
         # Nút
         frame_btn = tk.Frame(self, bg="#fce4ec")
         frame_btn.pack(pady=5)
-        tk.Button(frame_btn, text="Xem hóa đơn", bg="#4fc3f7", fg="white", width=12, command=self.xem_hoa_don).grid(row=0,column=0,padx=5)
-        tk.Button(frame_btn, text="Đóng", bg="#ce93d8", fg="white", width=12, command=self.destroy).grid(row=0,column=1,padx=5)
+
+        btn_style = {"font":("Times New Roman",11,"bold"), "fg":"white", "width":12, "relief":"flat"}
+
+        tk.Button(frame_btn, text="Xem hóa đơn", bg="#4fc3f7", command=self.xem_hoa_don, **btn_style).grid(row=0, column=0, padx=5)
+        tk.Button(frame_btn, text="Đóng", bg="#ce93d8", command=self.destroy, **btn_style).grid(row=0, column=1, padx=5)
 
         self.load_data()
-
     def load_data(self):
         conn = get_connection()
         cursor = conn.cursor()
