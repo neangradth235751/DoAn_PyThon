@@ -64,7 +64,7 @@ class MenuChinh(tk.Toplevel):
                  font=("Times New Roman", 20, "bold"), fg="#ad1457", bg="#fce4ec").place(x=300, y=50)
     
     def gioithieu(self):
-        messagebox.showinfo("Giới thiệu", "Chương trình quản lý cửa hàng vật liệu xây dựng.\nPhiên bản 1.0")
+        messagebox.showinfo ("Giới thiệu", "Chương trình quản lý cửa hàng vật liệu xây dựng.\nPhiên bản 1.0")
     
     def thoat_chuongtrinh(self):
         if messagebox.askyesno("Thoát", "Bạn có chắc muốn thoát chương trình?"):
