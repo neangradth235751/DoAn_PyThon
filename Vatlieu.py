@@ -268,5 +268,6 @@ class VatLieu(tk.Toplevel):
 # ======== CHẠY ĐỘC LẬP ========
 if __name__ == "__main__":
     root = tk.Tk()
+    root.withdraw() 
     app = VatLieu(root)
     app.mainloop()

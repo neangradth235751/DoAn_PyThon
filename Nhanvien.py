@@ -223,6 +223,6 @@ class NhanVien(tk.Toplevel):   # Tạo cửa sổ con
 
 if __name__=="__main__":
     root = tk.Tk()
-  
+    root.withdraw() 
     app = NhanVien(root)
     root.mainloop()

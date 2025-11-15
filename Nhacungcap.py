@@ -211,5 +211,6 @@ class NhaCungCap(tk.Toplevel):   # Từ Tk -> Toplevel
 # ======== CHẠY CHƯƠNG TRÌNH ========
 if __name__ == "__main__":
     root = tk.Tk()
+    root.withdraw()
     app = NhaCungCap(root)
     root.mainloop()
