@@ -268,6 +268,5 @@ class VatLieu(tk.Toplevel):
 # ======== CHẠY ĐỘC LẬP ========
 if __name__ == "__main__":
     root = tk.Tk()
-    root.withdraw()  # ẩn Tk gốc
     app = VatLieu(root)
     app.mainloop()
