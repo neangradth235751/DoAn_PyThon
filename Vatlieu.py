@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from tkcalendar import DateEntry
 import mysql.connector
 
 # ======== KẾT NỐI MYSQL ========
@@ -12,9 +13,9 @@ def get_connection():
     )
 
 # ======== CLASS QUẢN LÝ VẬT LIỆU ========
-class VatLieu(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class VatLieu(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
         self.title("Thông tin vật liệu")
         self.geometry("950x650")
         self.configure(bg="#fce4ec")
@@ -34,12 +35,12 @@ class VatLieu(tk.Tk):
             "TenVL": tk.StringVar(),
             "DonVi": tk.StringVar(),
             "DonGia": tk.StringVar(),
-            "SoLuongKho": tk.StringVar(),
+            "SoLuong": tk.StringVar(),
             "TenNCC": tk.StringVar()
         }
 
         labels = ["Mã VL:", "Tên VL:", "Đơn vị:", "Đơn Giá:", "Số lượng kho:", "Nhà cung cấp:"]
-        keys = ["MaVL", "TenVL", "DonVi", "DonGia", "SoLuongTonKho", "TenNCC"]
+        keys = ["MaVL", "TenVL", "DonVi", "DonGia", "SoLuong", "TenNCC"]
         list_donvi = ["Kg", "Bao", "Viên", "m3", "Lít", "Cây", "Tấm"]
 
         # Lấy danh sách nhà cung cấp từ MySQL
@@ -161,9 +162,24 @@ class VatLieu(tk.Tk):
         if not tenncc:
             messagebox.showwarning("Thiếu dữ liệu", "Vui lòng chọn Nhà cung cấp!")
             return
+        if not self.ncc_dict:
+            messagebox.showwarning("Cảnh báo", "Chưa có nhà cung cấp trong database!")
+            return
 
         try:
-            mancc = self.ncc_dict.get(tenncc, None)
+            gia = float(gia) if gia else 0
+        except ValueError:
+            messagebox.showwarning("Dữ liệu sai", "Đơn giá phải là số!")
+            return
+
+        try:
+            sl = int(sl) if sl else 0
+        except ValueError:
+            messagebox.showwarning("Dữ liệu sai", "Số lượng phải là số nguyên!")
+            return
+
+        try:
+            mancc = self.ncc_dict.get(tenncc)
             conn = get_connection()
             cursor = conn.cursor()
             cursor.execute(
@@ -200,8 +216,22 @@ class VatLieu(tk.Tk):
             messagebox.showinfo("Chọn dòng", "Vui lòng chọn vật liệu cần sửa!")
             return
         ma, ten, donvi, gia, sl, tenncc = [v.get().strip() for v in self.vars.values()]
-        mancc = self.ncc_dict.get(tenncc, None)
+
+        try:
+            gia = float(gia) if gia else 0
+        except ValueError:
+            messagebox.showwarning("Dữ liệu sai", "Đơn giá phải là số!")
+            return
+
+        try:
+            sl = int(sl) if sl else 0
+        except ValueError:
+            messagebox.showwarning("Dữ liệu sai", "Số lượng phải là số nguyên!")
+            return
+
+        mancc = self.ncc_dict.get(tenncc)
         old_ma = self.data[self.selected_index][0]
+
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -235,7 +265,9 @@ class VatLieu(tk.Tk):
             for i, key in enumerate(self.vars.keys()):
                 self.vars[key].set(self.data[idx][i])
 
-# ======== CHẠY CHƯƠNG TRÌNH ========
+# ======== CHẠY ĐỘC LẬP ========
 if __name__ == "__main__":
-    app = VatLieu()
+    root = tk.Tk()
+    root.withdraw()  # ẩn Tk gốc
+    app = VatLieu(root)
     app.mainloop()
