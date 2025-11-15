@@ -12,9 +12,9 @@ def get_connection():
     )
 
 # ======== CLASS QUẢN LÝ NHÀ CUNG CẤP ========
-class NhaCungCap(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class NhaCungCap(tk.Toplevel):   # Từ Tk -> Toplevel
+    def __init__(self, parent):
+        super().__init__(parent)  # parent là root Tk
         self.title("Thông tin nhà cung cấp")
         self.geometry("800x600")
         self.configure(bg="#fce4ec")
@@ -210,5 +210,6 @@ class NhaCungCap(tk.Tk):
 
 # ======== CHẠY CHƯƠNG TRÌNH ========
 if __name__ == "__main__":
-    app = NhaCungCap()
-    app.mainloop()
+    root = tk.Tk()
+    app = NhaCungCap(root)
+    root.mainloop()

@@ -3,13 +3,13 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 import mysql.connector
 
-class NhanVien(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class NhanVien(tk.Toplevel):   # Tạo cửa sổ con
+    def __init__(self, parent):
+        super().__init__(parent)  # parent là root Tk
         self.title("Thông tin nhân Viên")
         self.geometry("1050x630")
         self.configure(bg="#fce4ec")
-
+        
         # === Kết nối MySQL ===
         try:
             self.conn = mysql.connector.connect(
@@ -222,5 +222,6 @@ class NhanVien(tk.Tk):
         self.selected_ma=None
 
 if __name__=="__main__":
-    app = NhanVien()
-    app.mainloop()
+    root = tk.Tk()
+    app = NhanVien(root)
+    root.mainloop()
