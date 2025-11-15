@@ -13,9 +13,9 @@ def get_connection():
     )
 
 # ===== HÓA ĐƠN XUẤT =====
-class HoaDonXuat(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class HoaDonXuat(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
         self.title("Thông tin Hóa Đơn Xuất")
         self.geometry("900x600")
         self.configure(bg="#fce4ec")
@@ -298,5 +298,7 @@ class ChiTietHDX(tk.Toplevel):
         text.configure(state="disabled")
 
 if __name__=="__main__":
-    app = HoaDonXuat()
+    root = tk.Tk()
+    root.withdraw() 
+    app = HoaDonXuat(root)
     app.mainloop()

@@ -13,9 +13,9 @@ def get_connection():
     )
 
 # ======== HÓA ĐƠN NHẬP ========
-class HoaDonNhap(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class HoaDonNhap(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
         self.title("Thông tin Hóa Đơn Nhập")
         self.geometry("900x600")
         self.configure(bg="#fce4ec")
@@ -302,5 +302,7 @@ class ChiTietHDN(tk.Toplevel):
 
 # ===== MAIN =====
 if __name__ == "__main__":
-    app = HoaDonNhap()
+    root = tk.Tk()
+    root.withdraw() 
+    app = HoaDonNhap(root)
     app.mainloop()

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from tkcalendar import DateEntry
 import mysql.connector
 
 # ======== KẾT NỐI MYSQL ========
@@ -12,13 +13,12 @@ def get_connection():
     )
 
 # ======== CLASS QUẢN LÝ KHÁCH HÀNG ========
-class KhachHang(tk.Tk):
-    def __init__(self):
-        super().__init__()
+class KhachHang(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
         self.title("Quản lý khách hàng")
         self.geometry("900x650")
-        self.configure(bg="#fce4ec")  # pastel hồng dịu mắt
-
+        self.configure(bg="#fce4ec")
         # --- Tiêu đề ---
         tk.Label(self, text="THÔNG TIN KHÁCH HÀNG", font=("times new roman", 20, "bold"),
                  fg="#ad1457", bg="#fce4ec").pack(pady=10)
@@ -181,5 +181,7 @@ class KhachHang(tk.Tk):
 
 # ======== CHẠY CHƯƠNG TRÌNH ========
 if __name__=="__main__":
-    app = KhachHang()
+    root = tk.Tk()
+    root.withdraw() 
+    app = KhachHang(root)
     app.mainloop()
